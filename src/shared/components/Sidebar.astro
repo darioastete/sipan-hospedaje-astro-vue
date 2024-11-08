@@ -1,0 +1,47 @@
+---
+import ItemSidebar from "@components/ItemSidebar.astro";
+import { Routes } from "@type/Routes.const";
+// const routes = [
+// 	{ href: "/", text: "Dashboard" },
+// 	{ href: "/rooms", text: "Habitaciones" },
+// 	{
+// 		href: "/maintenance",
+// 		text: "Mantenimiento",
+// 		children: [
+// 			{ href: "/maintenance/rooms", text: "Habitaciones" },
+// 			{ href: "/maintenance/status-room", text: "Estados de Habitaciones" },
+// 			{ href: "/maintenance/category-room", text: "Categoria de Habitacion" },
+// 			{ href: "/maintenance/floors", text: "Pisos" },
+// 			{ href: "/maintenance/clients", text: "Clientes" },
+// 			{ href: "/maintenance/service-room", text: "Servicios" },
+// 		],
+// 	},
+// 	{
+// 		href: "/report",
+// 		text: "Reportes",
+// 		children: [
+// 			{ href: "/report/room-come", text: "Room Come" },
+// 			{ href: "/report/room-occupancy", text: "Ocupaciones" },
+// 			{ href: "/report/room-type-occupancy", text: "Tipo de Ocupaciones" },
+// 			{ href: "/report/top-clients", text: "Top Clients" },
+// 		],
+// 	},
+// 	{
+// 		href: "/admin",
+// 		text: "Administrador",
+// 		children: [
+// 			{ href: "/admin/users", text: "Usuarios" },
+// 			// { href: "admin/roles", text: "Roles" },
+// 		],
+// 	},
+// ];
+---
+<div class="flex flex-col flex-1 gap-2 bg-white">
+    <div class="flex-1">
+        {
+            Routes.map((route) => (
+                <ItemSidebar href={route.href} text={route.text} children={route.children} />
+            ))
+        }
+    </div>
+</div>

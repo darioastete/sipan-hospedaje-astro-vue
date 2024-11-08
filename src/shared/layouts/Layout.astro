@@ -1,0 +1,96 @@
+---
+import { pwaInfo } from "virtual:pwa-info";
+import Navbar from "@components/Navbar.astro";
+import Sidebar from "@components/Sidebar.astro";
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<script src="/src/pwa.ts"></script>
+    	{ pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
+
+		<script>
+			const isAuth = localStorage.getItem('token');
+
+			if (!isAuth) {
+				window.location.href = '/login';
+			}
+		</script>
+	</head>
+	<body>
+		<div id="app" class="relative grid h-screen bg-slate-100">
+			<aside class="[grid-area:sidebar] md:flex flex-col overflow-y-auto hidden">
+				<Sidebar />
+			</aside>
+			<nav class="[grid-area:navbar]">
+				<Navbar title={title} />
+			</nav>
+			<main class="[grid-area: main]">
+				<slot />
+			</main>
+		</div>
+	</body>
+</html>
+
+<style>
+	#app {
+		grid-template-columns: 250px 1fr;
+		grid-template-rows: 80px 1fr;
+		grid-template-areas: 
+			"sidebar navbar"
+			"sidebar main";
+		transition: grid-template-columns 0.3s;
+	}
+
+	#app.collapsed {
+		grid-template-columns: 0px 1fr; /* Sidebar oculto */
+	}
+	aside {
+		transition: width 0.3s ease;
+		width: 250px;
+	}
+
+	#app.collapsed aside {
+		width: 0px;
+	}
+
+	/* Media query para pantallas pequeñas */
+    @media (max-width: 768px) {
+        #app {
+            grid-template-columns: 1fr;
+			grid-template-rows: 60px 1fr;
+            grid-template-areas: 
+                "navbar"
+                "main";
+        }
+
+        aside {
+            display: none;
+        }
+    }
+
+</style>
+
+<script>
+	const toggleBtn = document.getElementById('toggle-btn');
+	// const sidebar = document.querySelector('.sidebar');
+	if (toggleBtn) {
+		toggleBtn.addEventListener('click', ()=>{
+			const app = document.getElementById('app');
+			app?.classList.toggle('collapsed');
+		});
+	}
+</script>

@@ -1,0 +1,104 @@
+---
+import Form from "@auth/components/formLogin.vue";
+import Layout from "@layout/BlankLayout.astro";
+
+import left from "@img/layer-left.svg";
+import right from "@img/layer-right.svg";
+import logo from "@img/logo_white.svg";
+---
+
+<Layout title="Iniciar Sesion">
+    <!-- <div class="max-w-md w-full space-y-8 bg-white p-6 rounded-xl md:shadow-md">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Bienvenido
+            </h2>
+        </div>
+        <form class="mt-8 space-y-6" action="#" method="POST" novalidate>
+            <input type="hidden" name="remember" value="true">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="email-address" class="sr-only">Email address</label>
+                    <input id="email-address" name="email" type="text"
+                    required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 
+                    placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+                    placeholder="Usuario">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password"
+                    required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 
+                    placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+                    placeholder="Contraseña">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border 
+                border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 
+                focus:ring-offset-2 focus:ring-indigo-500">
+                    Iniciar Sesion
+                </button>
+            </div>
+        </form>
+    </div> -->
+
+    <div
+        class="flex w-full flex-col sm:flex-row h-screen bg-primary-blue-500 sm:bg-white"
+    >
+        <div
+            class="sm:w-[40%] flex items-center justify-center order-2 sm:order-1 h-[40%] sm:h-screen sm:rounded-none rounded-tl-[20%] bg-white"
+        >
+        <Form client:load />
+            <!-- <div class="flex flex-col items-center justify-center"> -->
+                <!-- <Input
+                    label="Usuario"
+                    id="login"
+                    type="text"
+                    class="w-60 sm:w-60 shadow-lg"
+                    client:load
+                />
+                <Input
+                    label="Contraseña"
+                    id="login"
+                    type="password"
+                    class="w-60 sm:w-60 shadow-lg"
+                    client:load
+                />
+                <input type="text">
+                <Button label="Ingresar" class="shadow-lg" client:load /> -->
+            <!-- </div> -->
+        </div>
+        <div
+            class="sm:w-[60%] bg-primary-blue-500 sm:h-screen sm:rounded-bl-[15%] h-[60%] flex justify-around py-10 order-1 sm:order-2"
+        >
+            <img src={left.src} class="w-20 self-start hidden sm:block" />
+            <img src={logo.src} class="w-56" />
+            <img src={right.src} class="w-20 self-end hidden sm:block" />
+        </div>
+    </div>
+</Layout>
+
+<!-- <script>
+    const form = document.querySelector('form');
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username');
+        const password = document.getElementById('password')?.value;
+        console.log('Username:', username);
+        console.log('Password:', password);
+        const formData = new FormData(form);
+        console.log(formData, form);
+        // window.location.href = '/';
+        // const response = await fetch('/api/login', {
+        //     method: 'POST',
+        //     body: formData
+        // });
+        // const data = await response.json();
+        // if (data.success) {
+        //     window.location.href = '/';
+        // } else {
+        //     alert(data.message);
+        // }
+    });
+</script> -->

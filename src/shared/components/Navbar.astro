@@ -1,0 +1,42 @@
+---
+import MenuIcon from "@components/icons/Menu.astro";
+import PowerIcon from "@components/icons/Power.astro";
+import MobileMenu from "@components/MobileMenu.vue";
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+ <div class="flex justify-between items-center h-full p-3 bg-white">
+     <div class="flex items-center gap-3">
+        <button id="toggle-btn" class="p-3 hidden md:block">
+            <MenuIcon />
+         </button>
+         <span class="md:text-md font-semibold md:font-medium">{title}</span>
+     </div>
+     <div class=" hidden md:block">
+         <button id="logout-btn" class="p-3 flex items-center justify-center gap-2">
+            <!-- <MenuIcon /> -->
+            <PowerIcon />
+            <span>Cerrar Sesion</span>
+         </button>
+     </div>
+     <div class="flex items-center gap-3 md:hidden">
+         <MobileMenu client:load>
+            <div slot="icon">
+                <MenuIcon />
+            </div>
+         </MobileMenu>
+     </div>
+ </div>
+
+ <script>
+    const logOutBtn = document.getElementById('logout-btn');
+    logOutBtn?.addEventListener('click', ()=>{
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+    });
+ </script>

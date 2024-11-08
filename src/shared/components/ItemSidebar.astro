@@ -1,0 +1,33 @@
+---
+import ItemToggleSidebar from "@components/ItemToggleSidebar.vue";
+import CloseIcon from "@components/icons/Close.astro";
+import RightIcon from "@components/icons/Right.astro";
+
+interface Props {
+	href: string;
+	text: string;
+	children?: any[];
+}
+
+const { href, text, children } = Astro.props;
+---
+<div>
+    {
+    !children ? <a href={href} class="flex justify-between px-2 py-4 hover:bg-gray-100 items-center">
+        <span>{text}</span>
+    </a> : 
+    <ItemToggleSidebar href={href} text={text} subRoutes={children} client:load >
+        <div slot="openedToggle">
+            <CloseIcon class="w-4 h-4"/>
+        </div>
+        <div slot="closedToggle">
+            <RightIcon class="w-4 h-4"/>
+        </div>
+    </ItemToggleSidebar>
+    }
+</div>
+
+<script>
+
+
+</script>

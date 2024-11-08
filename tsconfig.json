@@ -1,0 +1,37 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["astro/client"],
+    "baseUrl": ".",
+    "outDir": "./build",
+    "paths": {
+      "~/*": ["src/*"],
+      "@components/*": ["src/shared/components/*"],
+      "@type/*": ["src/shared/types/*"],
+      "@service/*": ["src/shared/services/*"],
+      "@composables/*": ["src/shared/composables/*"],
+      "@config/*": ["src/shared/config/*"],
+      "@icon/*": ["src/assets/icons/*"],
+      "@img/*": ["src/assets/images/*"],
+      "@style/*": ["src/assets/styles/*"],
+      "@util/*": ["src/shared/utils/*"],
+      "@middleware/*": ["src/middleware/*"],
+      "@layout/*": ["src/shared/layouts/*"],
+      "@auth/*": ["src/modules/auth/*"],
+      "@maroom/*": ["src/modules/maintenance/room/*"],
+      "@maintenance/*": ["src/modules/maintenance/*"],
+      "@room/*": ["src/modules/rooms/*"],
+      "@admin/*": ["src/modules/admin/*"],
+      "@reports/*": ["src/modules/report/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist"]
+}
