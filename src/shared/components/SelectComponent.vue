@@ -17,19 +17,19 @@
 // );
 
 const {
-  label = "label",
-  data,
-  optionLabel = "label",
-  optionValue = "value",
-  hasError = false,
-  pathGet,
+	label = "label",
+	data,
+	optionLabel = "label",
+	optionValue = "value",
+	hasError = false,
+	pathGet,
 } = defineProps<{
-  label: string;
-  data?: any[];
-  optionLabel: string;
-  optionValue: string;
-  hasError?: boolean;
-  pathGet?: string;
+	label: string;
+	data?: any[];
+	optionLabel: string;
+	optionValue: string;
+	hasError?: boolean;
+	pathGet?: string;
 }>();
 
 import { useHttp } from "@composables/useHttpUniversal.composable";
@@ -37,25 +37,25 @@ import { METHOD_HTTP } from "@type/MethodsHttp.const";
 import { onMounted } from "vue";
 
 const {
-  executeRequest: getListAll,
-  loading,
-  result,
-  error: errorGet,
+	executeRequest: getListAll,
+	loading,
+	result,
+	error: errorGet,
 } = useHttp();
 
 if (pathGet && !data) {
-  onMounted(async () => {
-    // await getListAll(pathGet);
-    await getListAll(METHOD_HTTP.GET, pathGet);
-  });
+	onMounted(async () => {
+		// await getListAll(pathGet);
+		await getListAll(METHOD_HTTP.GET, pathGet);
+	});
 } else {
-  result.value = data || [];
+	result.value = data || [];
 }
 
 const modelValue = defineModel();
 
 defineExpose({
-  result,
+	result,
 });
 </script>
 <template>

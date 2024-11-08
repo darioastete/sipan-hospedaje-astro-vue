@@ -3,46 +3,46 @@
 // const router = useRouter();
 import ModalComponent from "@components/ModalComponent.vue";
 import OptionMenuComponent from "@components/OptionMenuComponent.vue";
-import type { OptionMenu } from "~/shared/types/OptionMenu.type";
 import { Routes } from "@type/Routes.const";
 import { ref } from "vue";
+import type { OptionMenu } from "~/shared/types/OptionMenu.type";
 
 const openModal = ref(false);
 
 const closeModalMenu = () => {
-  openModal.value = false;
+	openModal.value = false;
 };
 
 const openModalMenu = () => {
-  selectedOption.value.active = false;
-  openModal.value = true;
+	selectedOption.value.active = false;
+	openModal.value = true;
 };
 const selectedOption = ref<any>({
-  active: false,
+	active: false,
 });
 const selectOptionMenu = (optionSelect: OptionMenu) => {
-  let active = false;
-  if (optionSelect.children && optionSelect.children.length > 0) {
-    active = true;
-    selectedOption.value = { active, optionSelect };
-  } else {
-    closeModalMenu();
-    // console.log(optionSelect.route);
-    // router.push({ path: `${optionSelect.route}` });
-    location.href = optionSelect.href;
-  }
+	let active = false;
+	if (optionSelect.children && optionSelect.children.length > 0) {
+		active = true;
+		selectedOption.value = { active, optionSelect };
+	} else {
+		closeModalMenu();
+		// console.log(optionSelect.route);
+		// router.push({ path: `${optionSelect.route}` });
+		location.href = optionSelect.href;
+	}
 };
 const logout = () => {
-  localStorage.removeItem("token");
-  // router.push({ path: "/login" });
-  location.href = "/login";
+	localStorage.removeItem("token");
+	// router.push({ path: "/login" });
+	location.href = "/login";
 };
 
 // const pushProfile = () => {
 //   router.push({ path: "/maintenance/user" });
 // };
 const onBack = () => {
-  selectedOption.value.active = false;
+	selectedOption.value.active = false;
 };
 </script>
 <template>

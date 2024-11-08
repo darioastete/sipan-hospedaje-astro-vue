@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
 import Select from "@components/SelectComponent.vue";
-import Button from "@components/ButtonComponent.vue";
 
-import { required, helpers, minLength, email } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { email, minLength, required } from "@vuelidate/validators";
 import { ref } from "vue";
 // import { useFindData } from "@composables/findComposable";
 
@@ -14,8 +14,8 @@ import { METHOD_HTTP } from "@type/MethodsHttp.const";
 const name = defineModel("name", { type: String, default: "" });
 const last_name = defineModel("last_name", { type: String, default: "" });
 const id_document_type = defineModel("id_document_type", {
-  type: String,
-  default: "",
+	type: String,
+	default: "",
 });
 const document = defineModel("document", { type: String, default: "" });
 const cell_phone = defineModel("cell_phone", { type: String, default: "" });
@@ -23,122 +23,122 @@ const mail = defineModel("mail", { type: String, default: "" });
 const ocupation = defineModel("ocupation", { type: String, default: "" });
 
 const form = ref({
-  id: null,
-  name,
-  last_name,
-  id_document_type,
-  document,
-  cell_phone,
-  mail,
-  ocupation,
+	id: null,
+	name,
+	last_name,
+	id_document_type,
+	document,
+	cell_phone,
+	mail,
+	ocupation,
 });
 
 const clearForm = () => {
-  form.value.id = null;
-  form.value.name = "";
-  form.value.last_name = "";
-  form.value.id_document_type = "";
-  form.value.document = "";
-  form.value.cell_phone = "";
-  form.value.mail = "";
-  form.value.ocupation = "";
-  $form.value.$reset();
+	form.value.id = null;
+	form.value.name = "";
+	form.value.last_name = "";
+	form.value.id_document_type = "";
+	form.value.document = "";
+	form.value.cell_phone = "";
+	form.value.mail = "";
+	form.value.ocupation = "";
+	$form.value.$reset();
 };
 
 withDefaults(
-  defineProps<{
-    disabled?: boolean;
-    createButton?: boolean;
-    search?: boolean;
-    listTypeDoc?: any[];
-  }>(),
-  {
-    disabled: false,
-    createButton: true,
-    search: false,
-  }
+	defineProps<{
+		disabled?: boolean;
+		createButton?: boolean;
+		search?: boolean;
+		listTypeDoc?: any[];
+	}>(),
+	{
+		disabled: false,
+		createButton: true,
+		search: false,
+	},
 );
 
 const {
-  executeRequest: find,
-  error: errorFind,
-  loading: loadingFind,
-  result: resultFind,
+	executeRequest: find,
+	error: errorFind,
+	loading: loadingFind,
+	result: resultFind,
 } = useHttp();
 
 const rules = {
-  name: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
-  last_name: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
-  id_document_type: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
-  document: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
-  cell_phone: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
-  mail: {
-    required,
-    minLength: minLength(3),
-    email,
-    $autoDirty: true,
-  },
-  ocupation: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
+	name: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
+	last_name: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
+	id_document_type: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
+	document: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
+	cell_phone: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
+	mail: {
+		required,
+		minLength: minLength(3),
+		email,
+		$autoDirty: true,
+	},
+	ocupation: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
 };
 
 const emit = defineEmits<{
-  (e: "findClient", id: string): void;
-  (e: "submit"): void;
-  (e: "sendCloseModal"): void;
+	(e: "findClient", id: string): void;
+	(e: "submit"): void;
+	(e: "sendCloseModal"): void;
 }>();
 const searchClient = async () => {
-  if (!form.value.id_document_type || !form.value.document) {
-    return alert("Especifica el tipo y número de documento");
-  }
-  await find(
-    METHOD_HTTP.GET,
-    "clientbydni",
-    `${form.value.id_document_type}/${form.value.document}`
-  );
-  if (errorFind.value) {
-    return;
-  }
-  form.value = resultFind.value;
-  console.log(form.value, resultFind.value);
-  emit("findClient", resultFind.value.id);
+	if (!form.value.id_document_type || !form.value.document) {
+		return alert("Especifica el tipo y número de documento");
+	}
+	await find(
+		METHOD_HTTP.GET,
+		"clientbydni",
+		`${form.value.id_document_type}/${form.value.document}`,
+	);
+	if (errorFind.value) {
+		return;
+	}
+	form.value = resultFind.value;
+	console.log(form.value, resultFind.value);
+	emit("findClient", resultFind.value.id);
 };
 
 const $form = useVuelidate(rules, form);
 
 const onSubmit = () => {
-  emit("submit");
+	emit("submit");
 };
 const sendCloseModal = () => {
-  emit("sendCloseModal");
+	emit("sendCloseModal");
 };
 
 defineExpose({
-  $form,
-  clearForm,
+	$form,
+	clearForm,
 });
 </script>
 <template>

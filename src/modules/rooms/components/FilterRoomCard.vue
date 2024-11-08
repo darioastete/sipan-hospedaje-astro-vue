@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 const props = defineProps<{
-  label: string;
-  bg: string;
-  amount: number;
+	label: string;
+	bg: string;
+	amount: number;
 }>();
 
 const backColor = computed(() => `bg-[#${props.bg}]`);

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Input from "@components/InputComponent.vue";
 import Button from "@components/ButtonComponent.vue";
+import Input from "@components/InputComponent.vue";
 import formClientComponent from "@maintenance/client/components/formClientComponent.vue";
 
-import { required, helpers, minLength, email } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { minLength, required } from "@vuelidate/validators";
 import { ref } from "vue";
 
 import { onMounted } from "vue";
@@ -12,12 +12,12 @@ import { onMounted } from "vue";
 const room_id = defineModel("room_id", { type: String, default: "" });
 const id_client = defineModel("id_client", { type: String, default: "" });
 const check_in_date = defineModel("check_in_date", {
-  type: String,
-  default: "",
+	type: String,
+	default: "",
 });
 const check_out_date = defineModel("check_out_date", {
-  type: String,
-  default: "",
+	type: String,
+	default: "",
 });
 const total_price = defineModel("total_price", { type: String, default: "" });
 const notes = defineModel("notes", { type: String, default: "" });
@@ -26,68 +26,68 @@ const client = defineModel("client", { type: Object, default: {} });
 const formClientRef = ref();
 
 const { roomIdSel } = defineProps<{
-  listTypeDoc: any[];
-  roomIdSel: string;
-  viewMode: boolean;
+	listTypeDoc: any[];
+	roomIdSel: string;
+	viewMode: boolean;
 }>();
 
 room_id.value = roomIdSel;
 
 const form = ref({
-  room_id,
-  id_client,
-  check_in_date,
-  check_out_date,
-  total_price,
-  notes,
-  client,
+	room_id,
+	id_client,
+	check_in_date,
+	check_out_date,
+	total_price,
+	notes,
+	client,
 });
 
 const disabledFormClient = ref(true);
 
 const switchEnableFormClient = async (value: boolean) => {
-  if (value) {
-    disabledFormClient.value = true;
-  } else {
-    disabledFormClient.value = false;
-  }
-  form.value.id_client = "";
-  formClientRef.value.clearForm();
+	if (value) {
+		disabledFormClient.value = true;
+	} else {
+		disabledFormClient.value = false;
+	}
+	form.value.id_client = "";
+	formClientRef.value.clearForm();
 };
 const rules = {
-  check_in_date: {
-    required,
-    $autoDirty: true,
-  },
-  check_out_date: {
-    required,
-    $autoDirty: true,
-  },
-  total_price: {
-    required,
-    $autoDirty: true,
-  },
-  notes: {
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
+	check_in_date: {
+		required,
+		$autoDirty: true,
+	},
+	check_out_date: {
+		required,
+		$autoDirty: true,
+	},
+	total_price: {
+		required,
+		$autoDirty: true,
+	},
+	notes: {
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
 };
 
 const clearForm = () => {
-  formClientRef.value.clearForm();
-  $form.value.$reset();
+	formClientRef.value.clearForm();
+	$form.value.$reset();
 };
 
 const findClient = (id: string) => {
-  form.value.id_client = id;
-  console.log(form.value);
+	form.value.id_client = id;
+	console.log(form.value);
 };
 
 const $form = useVuelidate(rules, form);
 
 defineExpose({
-  $form,
-  clearForm,
+	$form,
+	clearForm,
 });
 
 onMounted(async () => {});

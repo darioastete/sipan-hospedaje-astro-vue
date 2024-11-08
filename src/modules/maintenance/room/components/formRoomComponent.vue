@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
 import Select from "@components/SelectComponent.vue";
-import Button from "@components/ButtonComponent.vue";
 import checkBoxServiceComponent from "@maroom/components/checkBoxServiceComponent.vue";
 
-import { required, decimal } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { decimal, required } from "@vuelidate/validators";
 import { ref } from "vue";
 
 import { onMounted } from "vue";
@@ -17,41 +17,41 @@ const id_flat = defineModel("id_flat");
 const services = defineModel("services", { type: Array, default: [] });
 
 const form = ref({
-  number,
-  cost,
-  id_category,
-  id_flat,
-  services,
+	number,
+	cost,
+	id_category,
+	id_flat,
+	services,
 });
 
 const rules = {
-  number: {
-    required,
-    $autoDirty: true,
-  },
-  cost: {
-    required,
-    decimal,
-    $autoDirty: true,
-  },
-  id_category: {
-    required,
-    $autoDirty: true,
-  },
-  id_flat: {
-    required,
-    $autoDirty: true,
-  },
-  services: {
-    required,
-    $autoDirty: true,
-  },
+	number: {
+		required,
+		$autoDirty: true,
+	},
+	cost: {
+		required,
+		decimal,
+		$autoDirty: true,
+	},
+	id_category: {
+		required,
+		$autoDirty: true,
+	},
+	id_flat: {
+		required,
+		$autoDirty: true,
+	},
+	services: {
+		required,
+		$autoDirty: true,
+	},
 };
 
 const $form = useVuelidate(rules, form);
 
 defineExpose({
-  $form,
+	$form,
 });
 
 onMounted(async () => {});

@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import InputComponent from "@components/InputComponent.vue";
 import ButtonComponent from "@components/ButtonComponent.vue";
+import InputComponent from "@components/InputComponent.vue";
 // import { useReport } from "../composables/getReportComposable";
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 
-import { required, helpers, minLength, email } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { email, minLength, required } from "@vuelidate/validators";
 
 const { executeRequest: getReport, loading, result, error } = useHttp();
 
 const form = ref({
-  from: "",
-  to: "",
+	from: "",
+	to: "",
 });
 
 const rules = {
-  from: {
-    required,
-    $autoDirty: true,
-  },
-  to: {
-    required,
-    $autoDirty: true,
-  },
+	from: {
+		required,
+		$autoDirty: true,
+	},
+	to: {
+		required,
+		$autoDirty: true,
+	},
 };
 
 const $form = useVuelidate(rules, form);
 const { path } = defineProps<{
-  path: string;
-  title: string;
+	path: string;
+	title: string;
 }>();
 
 const getReportForComposable = async () => {
-  await getReport(METHOD_HTTP.POST, path, undefined, form.value);
-  if (error.value) return;
-  console.log(result.value);
+	await getReport(METHOD_HTTP.POST, path, undefined, form.value);
+	if (error.value) return;
+	console.log(result.value);
 };
 
 onMounted(async () => {
-  await getReportForComposable();
+	await getReportForComposable();
 });
 </script>
 <template>

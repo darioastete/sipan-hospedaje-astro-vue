@@ -2,40 +2,40 @@
 import { ref } from "vue";
 
 const { iconType, icon } = defineProps<{
-  type?: "button" | "reset" | "submit" | undefined;
-  color?: "primary" | "warning" | "danger" | "secondary" | null;
-  label?: string;
-  icon?: string | null;
-  iconLeft?: string;
-  iconType?: "delete" | "edit" | "view" | string;
+	type?: "button" | "reset" | "submit" | undefined;
+	color?: "primary" | "warning" | "danger" | "secondary" | null;
+	label?: string;
+	icon?: string | null;
+	iconLeft?: string;
+	iconType?: "delete" | "edit" | "view" | string;
 }>();
 
 const iconShow = ref<string>();
 if (icon) {
-  iconShow.value = icon;
+	iconShow.value = icon;
 }
 
 const getImageUrl = (img: string) => {
-  return new URL(`../../assets/icons/${img}`, import.meta.url).href;
+	return new URL(`../../assets/icons/${img}`, import.meta.url).href;
 };
 
 const iconsType = {
-  none: "",
-  delete: "btn-delete-white.svg",
-  edit: "btn-edit-white.svg",
-  view: "btn-view-white.svg",
+	none: "",
+	delete: "btn-delete-white.svg",
+	edit: "btn-edit-white.svg",
+	view: "btn-view-white.svg",
 };
 
 const colorClasses: Record<
-  "primary" | "warning" | "danger" | "secondary",
-  string
+	"primary" | "warning" | "danger" | "secondary",
+	string
 > = {
-  primary: "bg-primary-blue-100 text-white enabled:hover:bg-primary-blue-300",
-  warning:
-    "bg-primary-yellow-100 text-white enabled:hover:bg-primary-yellow-300",
-  danger:
-    "bg-primary-danger-100 text-white enabled:hover:bg-primary-danger-300",
-  secondary: "bg-secondary-gray text-black",
+	primary: "bg-primary-blue-100 text-white enabled:hover:bg-primary-blue-300",
+	warning:
+		"bg-primary-yellow-100 text-white enabled:hover:bg-primary-yellow-300",
+	danger:
+		"bg-primary-danger-100 text-white enabled:hover:bg-primary-danger-300",
+	secondary: "bg-secondary-gray text-black",
 };
 </script>
 <template>

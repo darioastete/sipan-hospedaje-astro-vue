@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 const { icon } = defineProps<{
-  label: string;
-  icon: string;
+	label: string;
+	icon: string;
 }>();
 
 // Importar todos los íconos de la carpeta assets/icons
@@ -13,9 +13,9 @@ const iconSrc = ref<any>(null);
 
 // Cargar el ícono seleccionado
 if (icon && icons[`/src/assets/icons/menu/${icon}.svg`]) {
-  icons[`/src/assets/icons/menu/${icon}.svg`]().then((module) => {
-    iconSrc.value = (module as { default: string }).default;
-  });
+	icons[`/src/assets/icons/menu/${icon}.svg`]().then((module) => {
+		iconSrc.value = (module as { default: string }).default;
+	});
 }
 </script>
 <template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Input from "@components/InputComponent.vue";
 import Button from "@components/ButtonComponent.vue";
+import Input from "@components/InputComponent.vue";
 
-import { required, helpers, minLength, email } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { email, minLength, required } from "@vuelidate/validators";
 import { ref } from "vue";
 
 import { onMounted } from "vue";
@@ -11,26 +11,26 @@ import { onMounted } from "vue";
 const name = defineModel("name");
 
 const form = ref({
-  name,
+	name,
 });
 
 const rules = {
-  name: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
+	name: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
 };
 
 const $form = useVuelidate(rules, form);
 
 const clearForm = () => {
-  $form.value.$reset();
+	$form.value.$reset();
 };
 
 defineExpose({
-  $form,
-  clearForm,
+	$form,
+	clearForm,
 });
 
 onMounted(async () => {});

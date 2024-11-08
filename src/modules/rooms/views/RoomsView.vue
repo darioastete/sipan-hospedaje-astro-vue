@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import RoomCard from "@room/components/RoomCard.vue";
 import SelectComponent from "@components/SelectComponent.vue";
+import iLoader from "@icon/loader-blue.svg";
+import RoomCard from "@room/components/RoomCard.vue";
+import { ref } from "vue";
 // import { useData } from "@composables/getListComposable";
 import { onMounted } from "vue";
-import iLoader from "@icon/loader-blue.svg";
 
 import { useFilter } from "@room/composables/filterRoomComposable";
 // import { useDocumentType } from "@composables/getListDocumentType";
@@ -16,41 +16,41 @@ const { executeRequest: getListAll, error, loading, result } = useHttp();
 const { filterRoom, loadingSearch, roomsResult } = useFilter();
 
 const {
-  executeRequest: getListDocumentType,
-  error: errorDocumentType,
-  loading: loadingDocumentType,
-  result: documentTypes,
+	executeRequest: getListDocumentType,
+	error: errorDocumentType,
+	loading: loadingDocumentType,
+	result: documentTypes,
 } = useHttp();
 
 interface StatusRoom {
-  result: [
-    {
-      id: string;
-      color: string;
-    },
-  ];
+	result: [
+		{
+			id: string;
+			color: string;
+		},
+	];
 }
 const statusRoomComponent = ref<StatusRoom>({
-  result: [{ id: "", color: "" }],
+	result: [{ id: "", color: "" }],
 });
 
 const returnRooms = async () => {
-  await filterRoom(
-    result,
-    formFilters.value.statusRoom,
-    formFilters.value.flat,
-    formFilters.value.categoryRoom
-  );
+	await filterRoom(
+		result,
+		formFilters.value.statusRoom,
+		formFilters.value.flat,
+		formFilters.value.categoryRoom,
+	);
 };
 
 const mounted = async () => {
-  await getListDocumentType(METHOD_HTTP.GET, "documentype");
-  await getListAll(METHOD_HTTP.GET, "room");
-  returnRooms();
+	await getListDocumentType(METHOD_HTTP.GET, "documentype");
+	await getListAll(METHOD_HTTP.GET, "room");
+	returnRooms();
 };
 
 onMounted(async () => {
-  await mounted();
+	await mounted();
 });
 
 // const filters = [
@@ -61,29 +61,29 @@ onMounted(async () => {
 // ];
 
 const getColorForRoom = (idFilter: string) => {
-  const filter = statusRoomComponent.value.result.find(
-    (f) => f.id === idFilter
-  );
-  return filter?.color ? `#${filter.color}` : "";
+	const filter = statusRoomComponent.value.result.find(
+		(f) => f.id === idFilter,
+	);
+	return filter?.color ? `#${filter.color}` : "";
 };
 
 const cleanFilters = () => {
-  formFilters.value = {
-    flat: "",
-    statusRoom: "",
-    categoryRoom: "",
-  };
-  returnRooms();
+	formFilters.value = {
+		flat: "",
+		statusRoom: "",
+		categoryRoom: "",
+	};
+	returnRooms();
 };
 
 const onCreate = async () => {
-  await mounted();
+	await mounted();
 };
 
 const formFilters = ref({
-  flat: "",
-  statusRoom: "",
-  categoryRoom: "",
+	flat: "",
+	statusRoom: "",
+	categoryRoom: "",
 });
 </script>
 <template>

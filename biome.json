@@ -21,8 +21,8 @@
 		"rules": {
 			"recommended": true,
 			"suspicious": {
-				"noExplicitAny": "warn",
-				"noConsoleLog": "warn"
+				"noExplicitAny": "off",
+				"noConsoleLog": "off"
 			}
 		}
 	},

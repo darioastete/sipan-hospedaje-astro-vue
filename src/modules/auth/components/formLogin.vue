@@ -6,14 +6,14 @@ import Input from "@components/InputComponent.vue";
 import { ref } from "vue";
 
 const form = ref({
-  email: "",
-  password: "",
+	email: "",
+	password: "",
 });
 
 const login = async () => {
-  const response = await auth(form.value);
-  localStorage.setItem("token", String(response.data));
-  window.location.href = "/";
+	const response = await auth(form.value);
+	localStorage.setItem("token", String(response.data));
+	window.location.href = "/";
 };
 </script>
 <template>

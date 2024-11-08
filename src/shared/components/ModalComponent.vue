@@ -4,28 +4,28 @@ import leftBlackArrowIcon from "@icon/left-black-arrow.svg";
 import { ref } from "vue";
 
 withDefaults(
-  defineProps<{
-    modelValue?: boolean;
-    title?: string;
-    hasBackIcon?: boolean;
-    hasCloseIcon?: boolean;
-    hasMobileMode?: boolean;
-    size?: string;
-  }>(),
-  {
-    modelValue: true,
-    title: "",
-    hasBackIcon: false,
-    hasCloseIcon: true,
-    hasMobileMode: true,
-    size: "xs",
-  }
+	defineProps<{
+		modelValue?: boolean;
+		title?: string;
+		hasBackIcon?: boolean;
+		hasCloseIcon?: boolean;
+		hasMobileMode?: boolean;
+		size?: string;
+	}>(),
+	{
+		modelValue: true,
+		title: "",
+		hasBackIcon: false,
+		hasCloseIcon: true,
+		hasMobileMode: true,
+		size: "xs",
+	},
 );
 
 const emit = defineEmits<{
-  (e: "update:modelValue", modelValue: boolean): void;
-  (e: "onClose", modelValue: boolean): void;
-  (e: "onBack", modelValue: boolean): void;
+	(e: "update:modelValue", modelValue: boolean): void;
+	(e: "onClose", modelValue: boolean): void;
+	(e: "onBack", modelValue: boolean): void;
 }>();
 
 let startY = 0;
@@ -34,44 +34,44 @@ const modalTranslateY = ref(""); // Inicializa la variable reactiva para la tran
 const isDragging = ref(false);
 
 const sizes = {
-  xs: "!w-[500px]",
-  lg: "!w-[900px]",
-  xl: "!w-[1200px]",
+	xs: "!w-[500px]",
+	lg: "!w-[900px]",
+	xl: "!w-[1200px]",
 };
 
 const closeModal = () => {
-  modalTranslateY.value = "";
-  isDragging.value = false; // Asegúrate de que la clase 'dragging' se elimina
-  emit("onClose", false);
+	modalTranslateY.value = "";
+	isDragging.value = false; // Asegúrate de que la clase 'dragging' se elimina
+	emit("onClose", false);
 };
 
 const handleBack = () => {
-  emit("onBack", true);
+	emit("onBack", true);
 };
 
 const startDrag = (event: any) => {
-  startY = event.touches[0].clientY;
-  isDragging.value = true;
+	startY = event.touches[0].clientY;
+	isDragging.value = true;
 };
 
 const onDrag = (event: any) => {
-  currentY = event.touches[0].clientY;
-  const deltaY = currentY - startY;
+	currentY = event.touches[0].clientY;
+	const deltaY = currentY - startY;
 
-  if (deltaY > 0) {
-    // Asegúrate de que solo se mueva hacia abajo
-    modalTranslateY.value = `translateY(${deltaY}px)`;
-  }
+	if (deltaY > 0) {
+		// Asegúrate de que solo se mueva hacia abajo
+		modalTranslateY.value = `translateY(${deltaY}px)`;
+	}
 };
 
 const endDrag = () => {
-  const threshold = 100;
-  if (Math.abs(currentY - startY) > threshold) {
-    closeModal();
-  } else {
-    modalTranslateY.value = "";
-    isDragging.value = false; // Restablece la clase 'dragging'
-  }
+	const threshold = 100;
+	if (Math.abs(currentY - startY) > threshold) {
+		closeModal();
+	} else {
+		modalTranslateY.value = "";
+		isDragging.value = false; // Restablece la clase 'dragging'
+	}
 };
 
 const getSizeModal = () => {};

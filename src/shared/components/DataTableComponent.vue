@@ -7,63 +7,63 @@ import { computed } from "vue";
 import { toRefs } from "vue";
 
 interface Props {
-  headers: string[];
-  columns: string[];
-  data: any[];
-  loading: boolean;
+	headers: string[];
+	columns: string[];
+	data: any[];
+	loading: boolean;
 }
 
 const propsProxy = defineProps<Props>();
 const { data, headers, columns, loading } = toRefs(propsProxy);
 
 const buttons: {
-  type: "edit" | "delete" | "new";
-  color: "warning" | "danger" | "primary" | "secondary";
-  iconType: string;
+	type: "edit" | "delete" | "new";
+	color: "warning" | "danger" | "primary" | "secondary";
+	iconType: string;
 }[] = [
-  { type: "edit", color: "warning", iconType: "edit" },
-  { type: "delete", color: "danger", iconType: "delete" },
+	{ type: "edit", color: "warning", iconType: "edit" },
+	{ type: "delete", color: "danger", iconType: "delete" },
 ];
 
 const modals = {
-  delete: ref(false),
-  edit: ref(false),
-  new: ref(false),
+	delete: ref(false),
+	edit: ref(false),
+	new: ref(false),
 };
 const modalType = ref<keyof typeof modals>();
 const rowSelected = ref();
 
 const emit = defineEmits<{
-  (e: "openModal", value: Object): void;
-  (e: "closeModal"): void;
-  (e: "confirmationModal", value: object): void;
+	(e: "openModal", value: object): void;
+	(e: "closeModal"): void;
+	(e: "confirmationModal", value: object): void;
 }>();
 
 const openModal = (modalTypeKey: keyof typeof modals, row: any) => {
-  modals[modalTypeKey].value = true;
-  modalType.value = modalTypeKey;
-  rowSelected.value = row;
-  emit("openModal", row);
+	modals[modalTypeKey].value = true;
+	modalType.value = modalTypeKey;
+	rowSelected.value = row;
+	emit("openModal", row);
 };
 
 const closeModal = () => {
-  if (modalType.value) {
-    modals[modalType.value].value = false;
-  }
-  emit("closeModal");
+	if (modalType.value) {
+		modals[modalType.value].value = false;
+	}
+	emit("closeModal");
 };
 
 const isModalOpen = computed(() => {
-  return Object.values(modals).some((modal) => modal.value);
+	return Object.values(modals).some((modal) => modal.value);
 });
 
 const handleConfirmationModal = () => {
-  emit("confirmationModal", rowSelected.value);
+	emit("confirmationModal", rowSelected.value);
 };
 
 defineExpose({
-  openModal,
-  closeModal,
+	openModal,
+	closeModal,
 });
 </script>
 <template>

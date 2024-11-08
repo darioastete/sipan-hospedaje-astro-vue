@@ -1,81 +1,81 @@
 <script lang="ts" setup>
+import { useHttp } from "@composables/useHttpUniversal.composable";
 import CrudLayout from "@layout/CrudLayout.vue";
 import formComponent from "@maintenance/floor/components/formFlatComponent.vue";
-import { ref } from "vue";
+import { METHOD_HTTP } from "@type/MethodsHttp.const";
 // import { useData } from "@composables/getListComposable";
 // import { createData } from "@composables/createComposable";
 // import { updateData } from "@composables/updateComposable";
 // import { deleteData } from "@composables/deleteComposable";
 import type { SimpleCrud } from "@type/simple.crud";
-import { useHttp } from "@composables/useHttpUniversal.composable";
-import { METHOD_HTTP } from "@type/MethodsHttp.const";
+import { ref } from "vue";
 
 const { executeRequest: getListAll, result, loading } = useHttp();
 const { executeRequest: create, error: errorCreate } = useHttp();
 const {
-  executeRequest: update,
-  error: errorUpdate,
-  loading: loadingUpdate,
+	executeRequest: update,
+	error: errorUpdate,
+	loading: loadingUpdate,
 } = useHttp();
 const {
-  executeRequest: remove,
-  error: errorRemove,
-  loading: loadingRemove,
+	executeRequest: remove,
+	error: errorRemove,
+	loading: loadingRemove,
 } = useHttp();
 const crudComponent = ref();
 
 const initialForm = {
-  id: "",
-  description: "",
-  number: "",
+	id: "",
+	description: "",
+	number: "",
 };
 
 const form = ref<SimpleCrud>(initialForm);
 
 const handleOpenModal = (item: any) => {
-  if (item !== null) {
-    const newitem = { ...item };
-    form.value = newitem;
-  } else {
-    resetForm();
-  }
+	if (item !== null) {
+		const newitem = { ...item };
+		form.value = newitem;
+	} else {
+		resetForm();
+	}
 };
 
 const formComponentRef = ref();
 const resetForm = () => {
-  form.value = { ...initialForm };
-  formComponentRef.value.clearForm();
+	form.value = { ...initialForm };
+	formComponentRef.value.clearForm();
 };
 
 const sendCloseModal = () => {
-  crudComponent.value.closeModal();
+	crudComponent.value.closeModal();
 };
 
 const makeData = async () => {
-  await getListAll(METHOD_HTTP.GET, "flat");
+	await getListAll(METHOD_HTTP.GET, "flat");
 };
 
 const createItem = async () => {
-  await create(METHOD_HTTP.POST, "flat", undefined, form.value);
-  if (errorCreate.value) return;
-  sendCloseModal();
-  makeData();
-  resetForm();
+	await create(METHOD_HTTP.POST, "flat", undefined, form.value);
+	if (errorCreate.value) return;
+	sendCloseModal();
+	makeData();
+	resetForm();
 };
 
 const editItem = async () => {
-  await update(METHOD_HTTP.PUT, "flat", form.value.id, form.value);
-  if (errorUpdate.value) return;
-  sendCloseModal();
-  makeData();
-  resetForm();
+	await update(METHOD_HTTP.PUT, "flat", form.value.id, form.value);
+	if (errorUpdate.value) return;
+	sendCloseModal();
+	makeData();
+	resetForm();
 };
 
 const handleConfirmationModal = async (itemDelete: any) => {
-  await remove("flat", itemDelete.id);
-  if (errorRemove.value) return;
-  makeData();
-  sendCloseModal();
+	await remove("flat", itemDelete.id);
+	if (errorRemove.value) return;
+	makeData();
+	sendCloseModal();
 };
 
 makeData();

@@ -1,66 +1,61 @@
 <script setup lang="ts">
-import Input from "@components/InputComponent.vue";
 import Button from "@components/ButtonComponent.vue";
+import Input from "@components/InputComponent.vue";
 
-import {
-  required,
-  helpers,
-  minLength,
-  email as emailValidator,
-} from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import {
+	email as emailValidator,
+	minLength,
+	required,
+} from "@vuelidate/validators";
 import { onMounted, ref } from "vue";
-import { onUpdated } from "vue";
 
 const name = defineModel("name");
 const email = defineModel("email");
 const password = defineModel("password");
 
 defineProps<{
-  name: string;
-  email: string;
-  password: string;
+	name: string;
+	email: string;
+	password: string;
 }>();
 
 const form = ref({
-  name,
-  email,
-  password,
+	name,
+	email,
+	password,
 });
 
 const rules = {
-  name: {
-    required,
-    minLength: minLength(3),
-    $autoDirty: true,
-  },
-  email: {
-    required,
-    emailValidator,
-    $autoDirty: true,
-  },
-  password: {
-    // required,
-    minLength: minLength(6),
-    $autoDirty: true,
-  },
+	name: {
+		required,
+		minLength: minLength(3),
+		$autoDirty: true,
+	},
+	email: {
+		required,
+		emailValidator,
+		$autoDirty: true,
+	},
+	password: {
+		// required,
+		minLength: minLength(6),
+		$autoDirty: true,
+	},
 };
 
 const $form = useVuelidate(rules, form);
 
 const clearForm = () => {
-  $form.value.$reset();
+	$form.value.$reset();
 };
-// onUpdated(() => {
-//     $form.value.$reset();
-// });
 
 onMounted(async () => {
-  $form.value.$reset();
+	$form.value.$reset();
 });
 defineExpose({
-  $form,
-  clearForm,
+	$form,
+	clearForm,
 });
 
 onMounted(async () => {});

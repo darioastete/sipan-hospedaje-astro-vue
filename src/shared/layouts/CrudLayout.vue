@@ -7,12 +7,12 @@ import { watch } from "vue";
 const child = ref();
 
 interface Props {
-  title: string;
-  data: any[];
-  headers: string[];
-  search: string[];
-  columns: string[];
-  loading: boolean;
+	title: string;
+	data: any[];
+	headers: string[];
+	search: string[];
+	columns: string[];
+	loading: boolean;
 }
 
 const propsProxy = defineProps<Props>();
@@ -23,34 +23,34 @@ const searchQuery = ref<string>();
 const resultSearch = ref([...data.value]);
 
 watch(data, (newData) => {
-  resultSearch.value = newData;
+	resultSearch.value = newData;
 });
 const handleInput = () => {
-  resultSearch.value = data.value.filter((item) => {
-    return search.value.some((prop) =>
-      item[prop]
-        ?.toString()
-        ?.toLowerCase()
-        .includes(searchQuery.value?.toLowerCase())
-    );
-  });
+	resultSearch.value = data.value.filter((item) => {
+		return search.value.some((prop) =>
+			item[prop]
+				?.toString()
+				?.toLowerCase()
+				.includes(searchQuery.value?.toLowerCase()),
+		);
+	});
 };
 
 const emit = defineEmits<{
-  (e: "openModal", value: object): void;
-  (e: "confirmationModal", value: object): void;
+	(e: "openModal", value: object): void;
+	(e: "confirmationModal", value: object): void;
 }>();
 
 const openModal = () => {
-  child.value.openModal("new", null);
+	child.value.openModal("new", null);
 };
 const closeModal = () => {
-  child.value.closeModal();
+	child.value.closeModal();
 };
 
 defineExpose({
-  openModal,
-  closeModal,
+	openModal,
+	closeModal,
 });
 </script>
 <template>

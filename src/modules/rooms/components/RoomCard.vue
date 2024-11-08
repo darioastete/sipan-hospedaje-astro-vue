@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import iBed from "@icon/bed-white.svg";
-import ModalComponent from "@components/ModalComponent.vue";
-import formStayComponent from "@room/components/formStayComponent.vue";
 import Button from "@components/ButtonComponent.vue";
+import ModalComponent from "@components/ModalComponent.vue";
+import iBed from "@icon/bed-white.svg";
+import formStayComponent from "@room/components/formStayComponent.vue";
 
 //MODAL IMPORTS
 import imgLogo from "@img/logo_negro.svg";
@@ -17,40 +17,40 @@ import { METHOD_HTTP } from "@type/MethodsHttp.const";
 //FIND
 
 const {
-  executeRequest: find,
-  error: errorFind,
-  loading: loadingFind,
-  result: resultFind,
+	executeRequest: find,
+	error: errorFind,
+	loading: loadingFind,
+	result: resultFind,
 } = useHttp();
 const {
-  executeRequest: create,
-  error: errorCreate,
-  loading: loadingCreate,
-  result: resultCreate,
+	executeRequest: create,
+	error: errorCreate,
+	loading: loadingCreate,
+	result: resultCreate,
 } = useHttp();
 const {
-  executeRequest: remove,
-  error: errorRemove,
-  loading: loadingRemove,
-  result: resultRemove,
+	executeRequest: remove,
+	error: errorRemove,
+	loading: loadingRemove,
+	result: resultRemove,
 } = useHttp();
 const {
-  executeRequest: update,
-  error: errorUpdate,
-  loading: loadingUpdate,
-  result: resultUpdate,
+	executeRequest: update,
+	error: errorUpdate,
+	loading: loadingUpdate,
+	result: resultUpdate,
 } = useHttp();
 
 interface Props {
-  status: string;
-  number: number;
-  flatName: string;
-  categoryName: string;
-  color: string;
-  idroom: string;
-  labelStatus: string;
-  documentTypes: any[];
-  servicesRoom: any[];
+	status: string;
+	number: number;
+	flatName: string;
+	categoryName: string;
+	color: string;
+	idroom: string;
+	labelStatus: string;
+	documentTypes: any[];
+	servicesRoom: any[];
 }
 const isModalOpen = ref(false);
 const propsProxy = defineProps<Props>();
@@ -58,70 +58,68 @@ const viewMode = ref(false);
 const viewCleanRoom = ref(false);
 const formStayRef = ref();
 const closeModal = () => {
-  isModalOpen.value = false;
+	isModalOpen.value = false;
 };
 const openModal = () => {
-  isModalOpen.value = true;
-  viewMode.value = false;
-  viewCleanRoom.value = false;
-  console.log(propsProxy.labelStatus);
-  if (propsProxy.labelStatus.toLowerCase() == "ocupado") {
-    findData();
-    viewMode.value = true;
-  }
-  if (propsProxy.labelStatus.toLocaleLowerCase() == "limpieza") {
-    viewCleanRoom.value = true;
-  }
+	isModalOpen.value = true;
+	viewMode.value = false;
+	viewCleanRoom.value = false;
+	console.log(propsProxy.labelStatus);
+	if (propsProxy.labelStatus.toLowerCase() === "ocupado") {
+		findData();
+		viewMode.value = true;
+	}
+	if (propsProxy.labelStatus.toLocaleLowerCase() === "limpieza") {
+		viewCleanRoom.value = true;
+	}
 };
 const initForm = {
-  id: "",
-  room_id: "",
-  id_client: "",
-  check_in_date: "",
-  check_out_date: "",
-  total_price: "",
-  notes: "",
-  client: {},
+	id: "",
+	room_id: "",
+	id_client: "",
+	check_in_date: "",
+	check_out_date: "",
+	total_price: "",
+	notes: "",
+	client: {},
 };
 const form = ref<{
-  id: string;
-  room_id: string;
-  id_client: string;
-  check_in_date: string;
-  check_out_date: string;
-  total_price: string;
-  notes: string;
-  client: any;
+	id: string;
+	room_id: string;
+	id_client: string;
+	check_in_date: string;
+	check_out_date: string;
+	total_price: string;
+	notes: string;
+	client: any;
 }>(initForm);
 
-const emit = defineEmits<{
-  (e: "onCreate"): void;
-}>();
+const emit = defineEmits<(e: "onCreate") => void>();
 const handleSubmit = async () => {
-  await create(METHOD_HTTP.POST, "roomstays", undefined, form.value);
-  if (errorCreate.value) return;
-  closeModal();
-  emit("onCreate");
+	await create(METHOD_HTTP.POST, "roomstays", undefined, form.value);
+	if (errorCreate.value) return;
+	closeModal();
+	emit("onCreate");
 };
 
 const finishStadys = async () => {
-  await remove("roomstays", resultFind.value.id);
-  if (errorRemove.value) return;
-  closeModal();
-  emit("onCreate");
+	await remove("roomstays", resultFind.value.id);
+	if (errorRemove.value) return;
+	closeModal();
+	emit("onCreate");
 };
 
 const enableRoom = async () => {
-  await update(METHOD_HTTP.PUT, "enableroom", propsProxy.idroom, {});
-  if (errorUpdate.value) return;
-  closeModal();
-  emit("onCreate");
+	await update(METHOD_HTTP.PUT, "enableroom", propsProxy.idroom, {});
+	if (errorUpdate.value) return;
+	closeModal();
+	emit("onCreate");
 };
 
 const findData = async () => {
-  await find(METHOD_HTTP.GET, "roomstays", propsProxy.idroom);
-  if (errorFind.value) return;
-  form.value = resultFind.value;
+	await find(METHOD_HTTP.GET, "roomstays", propsProxy.idroom);
+	if (errorFind.value) return;
+	form.value = resultFind.value;
 };
 
 // const { color, number, status } = toRefs(propsProxy);

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 interface checkBoxProps {
-    label: string;
-    value: any;
-    id: string;
+	label: string;
+	value: any;
+	id: string;
 }
 defineProps<checkBoxProps>();
 
