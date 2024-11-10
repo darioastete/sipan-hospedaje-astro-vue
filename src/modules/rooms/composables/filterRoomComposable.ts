@@ -47,6 +47,7 @@ export function useFilter() {
 		// 	roomsByFlat[flatKey].push(room);
 		// });
 
+		//aqui la prueba
 		const sortedFlatKeys = Object.keys(roomsByFlat).sort((a, b) => {
 			const numberA = Number.parseInt(a.split(" - ")[1]);
 			const numberB = Number.parseInt(b.split(" - ")[1]);
