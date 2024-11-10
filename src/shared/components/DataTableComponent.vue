@@ -117,7 +117,7 @@ defineExpose({
           <td :colspan="columns.length + 1" class="text-center py-4">
             <div class="flex gap-2 justify-center items-center">
               <img :src="iLoader.src" class="animate-spin" />
-              <span>Cargando ..</span>
+              <span>Cargando ...</span>
             </div>
           </td>
         </tr>
