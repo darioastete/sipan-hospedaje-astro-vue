@@ -55,6 +55,7 @@ const changeEmitted = () => {
 if (pathGet && !data) {
 	onMounted(async () => {
 		// await getListAll(pathGet);
+		//nuevo
 		await getListAll(METHOD_HTTP.GET, pathGet);
 	});
 } else {
