@@ -10,36 +10,15 @@ import { ref } from "vue";
 
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
-// import { useFindData } from "@composables/findComposable";
-// import { createData } from "@composables/createComposable";
-// import { deleteData } from "@composables/deleteComposable";
-// import { updateData } from "@composables/updateComposable";
-//FIND
 
 const {
 	executeRequest: find,
 	error: errorFind,
-	loading: loadingFind,
 	result: resultFind,
 } = useHttp();
-const {
-	executeRequest: create,
-	error: errorCreate,
-	loading: loadingCreate,
-	result: resultCreate,
-} = useHttp();
-const {
-	executeRequest: remove,
-	error: errorRemove,
-	loading: loadingRemove,
-	result: resultRemove,
-} = useHttp();
-const {
-	executeRequest: update,
-	error: errorUpdate,
-	loading: loadingUpdate,
-	result: resultUpdate,
-} = useHttp();
+const { executeRequest: create, error: errorCreate } = useHttp();
+const { executeRequest: remove, error: errorRemove } = useHttp();
+const { executeRequest: update, error: errorUpdate } = useHttp();
 
 interface Props {
 	status: string;
@@ -64,7 +43,6 @@ const openModal = () => {
 	isModalOpen.value = true;
 	viewMode.value = false;
 	viewCleanRoom.value = false;
-	console.log(propsProxy.labelStatus);
 	if (propsProxy.labelStatus.toLowerCase() === "ocupado") {
 		findData();
 		viewMode.value = true;
@@ -73,17 +51,8 @@ const openModal = () => {
 		viewCleanRoom.value = true;
 	}
 };
-const initForm = {
-	id: "",
-	room_id: "",
-	id_client: "",
-	check_in_date: "",
-	check_out_date: "",
-	total_price: "",
-	notes: "",
-	client: {},
-};
-const form = ref<{
+
+interface IRoom {
 	id: string;
 	room_id: string;
 	id_client: string;
@@ -92,7 +61,8 @@ const form = ref<{
 	total_price: string;
 	notes: string;
 	client: any;
-}>(initForm);
+}
+const form = ref<IRoom>({} as IRoom);
 
 const emit = defineEmits<(e: "onCreate") => void>();
 const handleSubmit = async () => {
@@ -121,8 +91,6 @@ const findData = async () => {
 	if (errorFind.value) return;
 	form.value = resultFind.value;
 };
-
-// const { color, number, status } = toRefs(propsProxy);
 </script>
 <template>
   <div

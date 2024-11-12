@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useHttp } from "@composables/useHttpUniversal.composable";
+import { METHOD_HTTP } from "@type/MethodsHttp.const";
+import { onMounted } from "vue";
+
+const { executeRequest: getListAll, loading, result } = useHttp();
 // const { data, pathGet } = withDefaults(
 //   defineProps<{
 //     label: string;
@@ -32,16 +37,20 @@ const {
 	pathGet?: string;
 }>();
 
-import { useHttp } from "@composables/useHttpUniversal.composable";
-import { METHOD_HTTP } from "@type/MethodsHttp.const";
-import { onMounted } from "vue";
+const emit = defineEmits<(e: "updateSelect", item: any) => void>();
 
-const {
-	executeRequest: getListAll,
-	loading,
-	result,
-	error: errorGet,
-} = useHttp();
+const changeEmitted = () => {
+	const item = result.value.find(
+		(item: any) => item[optionValue] === modelValue.value,
+	);
+	if (item.name.toLowerCase() === "dni") {
+		console.log("esta entrando");
+		// return true;
+		emit("updateSelect", true);
+	} else {
+		emit("updateSelect", false);
+	}
+};
 
 if (pathGet && !data) {
 	onMounted(async () => {
@@ -69,6 +78,7 @@ defineExpose({
     <select
       :id="String(modelValue)"
       v-model="modelValue"
+      @change="changeEmitted"
       :class="`border sm:mb-2 w-full p-2 sm:p-2.5 text-2xs sm:text-xs ${
         hasError
           ? 'bg-red-50 border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 focus:border-red-500'

@@ -9,6 +9,10 @@ defineProps<{
 }>();
 const modelValue = defineModel();
 const emit = defineEmits(["searchClick"]);
+
+function sanitizeText(text: string): string {
+	return text.replace(/[^a-zA-Z]/g, "");
+}
 </script>
 <template>
   <div class="mb-5 mx-2">
@@ -22,7 +26,6 @@ const emit = defineEmits(["searchClick"]);
     <div class="flex">
       <input
         :type="type"
-        :id="`input_${label.toLowerCase()}_${id}`"
         v-model="modelValue"
         :disabled="disabled"
         :class="`text-2xs sm:text-xs border w-full p-2 sm:p-2.5 ${

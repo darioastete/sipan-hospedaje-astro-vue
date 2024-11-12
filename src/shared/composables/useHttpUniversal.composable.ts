@@ -67,7 +67,7 @@ export function useHttp() {
 
 			result.value = response.value.data;
 			error.value = null;
-			console.log(response.value);
+			// console.log(response.value);
 		} catch (err: unknown) {
 			error.value = err;
 			error.value.success = false;

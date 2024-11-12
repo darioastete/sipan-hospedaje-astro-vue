@@ -5,11 +5,11 @@ import Select from "@components/SelectComponent.vue";
 
 import { useVuelidate } from "@vuelidate/core";
 import { email, minLength, required } from "@vuelidate/validators";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 // import { useFindData } from "@composables/findComposable";
 
-import { useHttp } from "@composables/useHttpUniversal.composable";
-import { METHOD_HTTP } from "@type/MethodsHttp.const";
+import { useHttp } from "@composables/useHttpDNI.composable";
+// import { METHOD_HTTP } from "@type/MethodsHttp.const";
 
 const name = defineModel("name", { type: String, default: "" });
 const last_name = defineModel("last_name", { type: String, default: "" });
@@ -18,9 +18,18 @@ const id_document_type = defineModel("id_document_type", {
 	default: "",
 });
 const document = defineModel("document", { type: String, default: "" });
-const cell_phone = defineModel("cell_phone", { type: String, default: "" });
-const mail = defineModel("mail", { type: String, default: "" });
-const ocupation = defineModel("ocupation", { type: String, default: "" });
+const cell_phone = defineModel("cell_phone", {
+	type: String,
+	default: "923456788",
+});
+const mail = defineModel("mail", {
+	type: String,
+	default: "default@gmail.com",
+});
+const ocupation = defineModel("ocupation", {
+	type: String,
+	default: "DEFAULT",
+});
 
 const form = ref({
 	id: null,
@@ -39,25 +48,34 @@ const clearForm = () => {
 	form.value.last_name = "";
 	form.value.id_document_type = "";
 	form.value.document = "";
-	form.value.cell_phone = "";
-	form.value.mail = "";
-	form.value.ocupation = "";
-	$form.value.$reset();
+	form.value.cell_phone = "923456788";
+	form.value.mail = "default@gmail.com";
+	form.value.ocupation = "DEFAULT";
+	// $form.value.$reset();
 };
+
+watch(
+	() => form.value.id_document_type,
+	(value) => {
+		console.log(value);
+		// if (value) {
+		//   form.value.document = "";
+		// }
+	},
+);
 
 withDefaults(
 	defineProps<{
 		disabled?: boolean;
 		createButton?: boolean;
-		search?: boolean;
 		listTypeDoc?: any[];
 	}>(),
 	{
 		disabled: false,
 		createButton: true,
-		search: false,
 	},
 );
+const search = ref(false);
 
 const {
 	executeRequest: find,
@@ -66,44 +84,44 @@ const {
 	result: resultFind,
 } = useHttp();
 
-const rules = {
-	name: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	last_name: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	id_document_type: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	document: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	cell_phone: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	mail: {
-		required,
-		minLength: minLength(3),
-		email,
-		$autoDirty: true,
-	},
-	ocupation: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-};
+// const rules = {
+//   name: {
+//     required,
+//     minLength: minLength(3),
+//     $autoDirty: true,
+//   },
+//   last_name: {
+//     required,
+//     minLength: minLength(3),
+//     $autoDirty: true,
+//   },
+//   id_document_type: {
+//     required,
+//     minLength: minLength(3),
+//     $autoDirty: true,
+//   },
+//   document: {
+//     required,
+//     minLength: minLength(3),
+//     $autoDirty: true,
+//   },
+//   cell_phone: {
+//     required,
+//     minLength: minLength(3),
+//     $autoDirty: true,
+//   },
+//   mail: {
+//     required,
+//     minLength: minLength(3),
+//     email,
+//     $autoDirty: true,
+//   },
+//   ocupation: {
+//     required,
+//     minLength: minLength(3),
+//     $autoDirty: true,
+//   },
+// };
 
 const emit = defineEmits<{
 	(e: "findClient", id: string): void;
@@ -114,20 +132,32 @@ const searchClient = async () => {
 	if (!form.value.id_document_type || !form.value.document) {
 		return alert("Especifica el tipo y número de documento");
 	}
-	await find(
-		METHOD_HTTP.GET,
-		"clientbydni",
-		`${form.value.id_document_type}/${form.value.document}`,
-	);
+	await find(form.value.document);
 	if (errorFind.value) {
 		return;
 	}
-	form.value = resultFind.value;
-	console.log(form.value, resultFind.value);
+
+	console.log("RESULT FUND", resultFind.value);
+	form.value.name = resultFind.value.data.NOMBRES;
+	form.value.last_name = `${resultFind.value.data.AP_PAT}·${resultFind.value.data.AP_MAT}`;
+	form.value.cell_phone = "923456788";
+	form.value.mail = "default@gmail.com";
+	form.value.ocupation = "DEFAULT";
+	// form.value = resultFind.value;
 	emit("findClient", resultFind.value.id);
 };
 
-const $form = useVuelidate(rules, form);
+const updateSelect = (value: any) => {
+	console.log("value", value);
+	if (value) {
+		search.value = true;
+	} else {
+		search.value = false;
+	}
+	// value ? (search.value = true) : (search.value = false);
+};
+
+// const $form = useVuelidate(rules, form);
 
 const onSubmit = () => {
 	emit("submit");
@@ -137,7 +167,6 @@ const sendCloseModal = () => {
 };
 
 defineExpose({
-	$form,
 	clearForm,
 });
 </script>
@@ -148,16 +177,15 @@ defineExpose({
         label="Documento"
         optionLabel="name"
         optionValue="id"
-        :has-error="$form.id_document_type.$error"
         v-model="form.id_document_type"
         path-get="documentype"
+        @updateSelect="updateSelect"
         :data="listTypeDoc"
       />
       <Input
         id="clientMaintenance"
         label="N° Documento"
         type="text"
-        :has-error="$form.document.$error"
         v-model="form.document"
         :search="search"
         @searchClick="searchClient"
@@ -169,23 +197,20 @@ defineExpose({
         type="text"
         v-model="form.name"
         :disabled="disabled"
-        :has-error="$form.name.$error"
       />
       <Input
         id="clientMaintenance"
         label="Apellidos"
         type="text"
         :disabled="disabled"
-        :has-error="$form.last_name.$error"
         v-model="form.last_name"
       />
 
-      <Input
+      <!-- <Input
         id="clientMaintenance"
         label="Teléfono"
         type="text"
         :disabled="disabled"
-        :has-error="$form.cell_phone.$error"
         v-model="form.cell_phone"
       />
       <Input
@@ -193,7 +218,6 @@ defineExpose({
         label="correo"
         type="text"
         :disabled="disabled"
-        :has-error="$form.mail.$error"
         v-model="form.mail"
       />
       <Input
@@ -201,9 +225,8 @@ defineExpose({
         label="Ocupación"
         type="text"
         :disabled="disabled"
-        :has-error="$form.ocupation.$error"
         v-model="form.ocupation"
-      />
+      /> -->
     </div>
     <div class="flex justify-end gap-2" v-if="createButton">
       <Button
@@ -212,7 +235,7 @@ defineExpose({
         @click="sendCloseModal"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" :disabled="$form.$invalid" />
+      <Button label="Guardar Cambios" />
     </div>
   </form>
 </template>
