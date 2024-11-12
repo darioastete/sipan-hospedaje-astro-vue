@@ -6,17 +6,19 @@ import RightIcon from "@components/icons/Right.astro";
 interface Props {
 	href: string;
 	text: string;
+	icon: any;
 	children?: any[];
 }
 
-const { href, text, children } = Astro.props;
+const { href, text, children, icon } = Astro.props;
 ---
 <div>
     {
-    !children ? <a href={href} class="flex justify-between px-2 py-4 hover:bg-gray-100 items-center">
+    !children ? <a href={href} class="flex gap-3 px-2 py-4 hover:bg-gray-100 items-center" >
+        <img src={icon} class="w-9">
         <span>{text}</span>
     </a> : 
-    <ItemToggleSidebar href={href} text={text} subRoutes={children} client:load >
+    <ItemToggleSidebar href={href} text={text} icon={icon} subRoutes={children} client:load >
         <div slot="openedToggle">
             <CloseIcon class="w-4 h-4"/>
         </div>
@@ -28,6 +30,8 @@ const { href, text, children } = Astro.props;
 </div>
 
 <script>
-
-
+    const loginLink = document.querySelector('a[href="/login"]');
+    loginLink?.addEventListener('click', () => {
+        localStorage.removeItem('token');
+    });
 </script>

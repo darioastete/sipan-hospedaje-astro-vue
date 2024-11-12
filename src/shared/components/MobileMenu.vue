@@ -29,7 +29,11 @@ const selectOptionMenu = (optionSelect: OptionMenu) => {
 		closeModalMenu();
 		// console.log(optionSelect.route);
 		// router.push({ path: `${optionSelect.route}` });
-		location.href = optionSelect.href;
+		if (optionSelect.href === "/login") {
+			logout();
+		} else {
+			location.href = optionSelect.href;
+		}
 	}
 };
 const logout = () => {
