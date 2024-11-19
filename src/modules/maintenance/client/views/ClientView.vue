@@ -83,7 +83,7 @@ const editClient = async () => {
 };
 
 const handleConfirmationModal = async (itemDelete: any) => {
-	await remove("client", itemDelete.id);
+	await remove(METHOD_HTTP.DELETE, "client", itemDelete.id);
 	if (errorRemove.value) return;
 	makeData();
 	sendCloseModal();
