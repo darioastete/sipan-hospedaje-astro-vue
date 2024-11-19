@@ -17,7 +17,6 @@ function sanitizeText(text: string): string {
 <template>
   <div class="mb-5 mx-2">
     <label
-      for="error"
       :class="`block sm:mb-2 text-2xs sm:text-xs font-medium capitalize sm:uppercase ${
         hasError ? 'text-red-700' : ''
       } `"

@@ -2,7 +2,7 @@ import axios from "@config/axiosDocument.config";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
 import { ref } from "vue";
 
-export function useHttp() {
+export function useHttpDNI() {
 	const loading = ref(false);
 	const response = ref<any>();
 	const result = ref<any[] | object | string | any>([]);

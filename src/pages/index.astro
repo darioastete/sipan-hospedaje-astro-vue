@@ -1,9 +1,8 @@
 ---
 import Layout from "@layout/Layout.astro";
+import Rooms from "@room/views/RoomsView.vue";
 ---
 
-<Layout title="Bienvenido al Hospedaje Sipan">
-	<div class="flex items-center h-full justify-center">
-		<h1>Welcome to</h1>
-	</div>
+<Layout title="Habitaciones">
+    <Rooms client:load />
 </Layout>

@@ -31,7 +31,7 @@ const { title } = Astro.props;
 		</script>
 	</head>
 	<body>
-		<div id="app" class="relative grid h-screen bg-slate-100">
+		<div id="app" class="relative grid h-screen bg-slate-100 overflow-hidden ">
 			<aside class="[grid-area:sidebar] md:flex flex-col overflow-y-auto hidden">
 				<Sidebar />
 			</aside>
@@ -39,6 +39,7 @@ const { title } = Astro.props;
 				<Navbar title={title} />
 			</nav>
 			<main class="[grid-area: main]">
+				<div id="modal-container" />
 				<slot />
 			</main>
 		</div>

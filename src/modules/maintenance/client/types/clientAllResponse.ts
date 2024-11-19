@@ -9,8 +9,8 @@ export interface Datum {
 	last_name: string;
 	id_document_type: string;
 	document: string;
-	cell_phone: string;
-	mail: string;
-	ocupation: null | string;
+	cell_phone?: string;
+	mail?: string;
+	ocupation?: null | string;
 	status: number | null;
 }

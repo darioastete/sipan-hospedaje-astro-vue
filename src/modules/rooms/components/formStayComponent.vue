@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
-import formClientComponent from "@maintenance/client/components/formClientComponent.vue";
+// import formClientComponent from "@maintenance/client/components/formClientComponent.vue";
 
 import { useVuelidate } from "@vuelidate/core";
 import { minLength, required } from "@vuelidate/validators";
-import { ref } from "vue";
-
-import { onMounted } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 const room_id = defineModel("room_id", { type: String, default: "" });
 const id_client = defineModel("id_client", { type: String, default: "" });
@@ -23,13 +21,24 @@ const total_price = defineModel("total_price", { type: String, default: "" });
 const notes = defineModel("notes", { type: String, default: "" });
 const client = defineModel("client", { type: Object, default: {} });
 
-const formClientRef = ref();
+// const formClientRef = ref();
 
-const { roomIdSel } = defineProps<{
+const { roomIdSel, listTypeDoc } = defineProps<{
 	listTypeDoc: any[];
 	roomIdSel: string;
-	viewMode: boolean;
 }>();
+
+// const emit = defineEmits(["submit", "sendCloseModal"]);
+const emit = defineEmits<{
+	(e: "submit", value: any): void;
+	(e: "sendCloseModal"): void;
+}>();
+
+// const emit = defineEmits<{
+// 	(e: "openModal", value: object): void;
+// 	(e: "closeModal"): void;
+// 	(e: "confirmationModal", value: object): void;
+// }>();
 
 room_id.value = roomIdSel;
 
@@ -43,17 +52,21 @@ const form = ref({
 	client,
 });
 
-const disabledFormClient = ref(true);
+watch(client, (value) => {
+	console.log(value);
+});
 
-const switchEnableFormClient = async (value: boolean) => {
-	if (value) {
-		disabledFormClient.value = true;
-	} else {
-		disabledFormClient.value = false;
-	}
-	form.value.id_client = "";
-	formClientRef.value.clearForm();
-};
+// const disabledFormClient = ref(true);
+
+// const switchEnableFormClient = async (value: boolean) => {
+//   if (value) {
+//     disabledFormClient.value = true;
+//   } else {
+//     disabledFormClient.value = false;
+//   }
+//   form.value.id_client = "";
+//   // formClientRef.value.clearForm();
+// };
 const rules = {
 	check_in_date: {
 		required,
@@ -73,31 +86,44 @@ const rules = {
 	},
 };
 
-const clearForm = () => {
-	formClientRef.value.clearForm();
-	$form.value.$reset();
-};
+// const clearForm = () => {
+// 	formClientRef.value.clearForm();
+// 	$form.value.$reset();
+// };
 
-const findClient = (id: string) => {
-	form.value.id_client = id;
-	console.log(form.value);
-};
+// const findClient = (id: string) => {
+//   form.value.id_client = id;
+//   console.log(form.value);
+// };
 
 const $form = useVuelidate(rules, form);
 
 defineExpose({
 	$form,
-	clearForm,
+	// clearForm,
 });
 
-onMounted(async () => {});
+const createStay = async () => {
+	console.log("FORM", form.value);
+	// await create(METHOD_HTTP.POST, "roomstays", undefined, form.value);
+	// if (errorCreate.value) return;
+	// closeModal();
+	// emit("onCreate");
+	emit("submit", form.value);
+};
+
+// onMounted(() => {
+//   console.log("LIST TYPES", listTypeDoc);
+//   console.log(formClientRef.value);
+//   console.log("CLIENTE BRO==>", form.value);
+// });
 </script>
 <template>
-  <form @submit.prevent="$emit('sumbit')">
+  <form @submit.prevent="createStay()">
     <section class="flex flex-col mt-3 shadow-lg px-5 py-4 rounded-md">
       <div class="flex justify-between items-center">
         <h2 class="sm:text-sm text-primary-yellow-300 mb-3">Cliente</h2>
-        <button
+        <!-- <button
           type="button"
           class="text-primary-yellow-300 mb-3 text-xs font-semibold"
           @click="switchEnableFormClient(false)"
@@ -112,11 +138,13 @@ onMounted(async () => {});
           v-else
         >
           Cancelar Nuevo
-        </button>
+        </button> -->
       </div>
       <!-- <template> -->
 
-      <formClientComponent
+      <slot name="client"></slot>
+
+      <!-- <formClientComponent
         @findClient="findClient"
         ref="formClientRef"
         :disabled="disabledFormClient"
@@ -127,10 +155,7 @@ onMounted(async () => {});
         v-model:last_name="form.client.last_name"
         v-model:id_document_type="form.client.id_document_type"
         v-model:document="form.client.document"
-        v-model:cell_phone="form.client.cell_phone"
-        v-model:mail="form.client.mail"
-        v-model:ocupation="form.client.ocupation"
-      />
+      /> -->
       <!-- </template> -->
     </section>
 

@@ -4,23 +4,6 @@ import { METHOD_HTTP } from "@type/MethodsHttp.const";
 import { onMounted } from "vue";
 
 const { executeRequest: getListAll, loading, result } = useHttp();
-// const { data, pathGet } = withDefaults(
-//   defineProps<{
-//     label: string;
-//     data?: any[];
-//     optionLabel: string;
-//     optionValue: string;
-//     hasError?: boolean;
-//     pathGet?: string;
-//   }>(),
-//   {
-//     label: "label",
-//     optionLabel: "label",
-//     optionValue: "value",
-//     hasError: false,
-//   }
-// );
-
 const {
 	label = "label",
 	data,
@@ -36,33 +19,36 @@ const {
 	hasError?: boolean;
 	pathGet?: string;
 }>();
-
-const emit = defineEmits<(e: "updateSelect", item: any) => void>();
-
-const changeEmitted = () => {
-	const item = result.value.find(
-		(item: any) => item[optionValue] === modelValue.value,
-	);
-	if (item.name.toLowerCase() === "dni") {
-		console.log("esta entrando");
-		// return true;
-		emit("updateSelect", true);
-	} else {
-		emit("updateSelect", false);
-	}
-};
-
-if (pathGet && !data) {
-	onMounted(async () => {
-		// await getListAll(pathGet);
-		//nuevo
-		await getListAll(METHOD_HTTP.GET, pathGet);
-	});
-} else {
-	result.value = data || [];
-}
-
 const modelValue = defineModel();
+
+// const item = result.value.find(
+//   (item: any) => item[optionValue] === modelValue.value
+// );
+// console.log(result.value, optionValue, item, modelValue.value);
+// if (!item || !item.name) return;
+// emit("updateSelect", item.name.toLowerCase() === "dni");
+// // if (item.name.toLowerCase() === "dni") {
+// //   emit("updateSelect", true);
+// // } else {
+// //   emit("updateSelect", false);
+// // }
+
+onMounted(() => {
+	if (pathGet && !data) {
+		getListAll(METHOD_HTTP.GET, pathGet);
+	} else {
+		result.value = data || [];
+	}
+});
+// if (pathGet && !data) {
+//   onMounted(async () => {
+//     // await getListAll(pathGet);
+//     //nuevo
+//     await getListAll(METHOD_HTTP.GET, pathGet);
+//   });
+// } else {
+//   result.value = data || [];
+// }
 
 defineExpose({
 	result,
@@ -79,24 +65,21 @@ defineExpose({
     <select
       :id="String(modelValue)"
       v-model="modelValue"
-      @change="changeEmitted"
       :class="`border sm:mb-2 w-full p-2 sm:p-2.5 text-2xs sm:text-xs ${
         hasError
           ? 'bg-red-50 border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 focus:border-red-500'
           : ''
       }`"
     >
-      <option :value="null || ''" disabled v-if="!loading">
-        Seleccione...
-      </option>
+      <option :value="''" disabled v-if="loading">Cargando ...</option>
+      <option :value="''" disabled v-else>Seleccione...</option>
       <template v-for="item in result" :key="item.id" v-if="!loading">
         <option :value="item[optionValue]" class="uppercase">
           {{ item[optionLabel] }}
         </option>
       </template>
-      <template v-else>
-        <option :value="null">cargando ...</option>
-      </template>
+      <!-- <template v-if="loading"> -->
+      <!-- </template> -->
     </select>
   </div>
 </template>

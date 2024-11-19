@@ -3,13 +3,28 @@ import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
 import Select from "@components/SelectComponent.vue";
 
-import { useVuelidate } from "@vuelidate/core";
-import { email, minLength, required } from "@vuelidate/validators";
+// import { useVuelidate } from "@vuelidate/core";
+// import { email, minLength, required } from "@vuelidate/validators";
 import { ref, watch } from "vue";
 // import { useFindData } from "@composables/findComposable";
 
-import { useHttp } from "@composables/useHttpDNI.composable";
-// import { METHOD_HTTP } from "@type/MethodsHttp.const";
+import { useHttpDNI } from "@composables/useHttpDNI.composable";
+import { useHttp } from "@composables/useHttpUniversal.composable";
+import { METHOD_HTTP } from "@type/MethodsHttp.const";
+
+const {
+	executeRequest: findDNI,
+	error: errorFindDNI,
+	loading: loadingFindDNI,
+	result: resultFindDNI,
+} = useHttpDNI();
+
+const {
+	executeRequest: findClient,
+	error: errorFindClient,
+	loading: loadingFindClient,
+	result: resultFindClient,
+} = useHttp();
 
 const name = defineModel("name", { type: String, default: "" });
 const last_name = defineModel("last_name", { type: String, default: "" });
@@ -18,28 +33,12 @@ const id_document_type = defineModel("id_document_type", {
 	default: "",
 });
 const document = defineModel("document", { type: String, default: "" });
-const cell_phone = defineModel("cell_phone", {
-	type: String,
-	default: "923456788",
-});
-const mail = defineModel("mail", {
-	type: String,
-	default: "default@gmail.com",
-});
-const ocupation = defineModel("ocupation", {
-	type: String,
-	default: "DEFAULT",
-});
-
 const form = ref({
 	id: null,
 	name,
 	last_name,
 	id_document_type,
 	document,
-	cell_phone,
-	mail,
-	ocupation,
 });
 
 const clearForm = () => {
@@ -48,24 +47,12 @@ const clearForm = () => {
 	form.value.last_name = "";
 	form.value.id_document_type = "";
 	form.value.document = "";
-	form.value.cell_phone = "923456788";
-	form.value.mail = "default@gmail.com";
-	form.value.ocupation = "DEFAULT";
 	// $form.value.$reset();
 };
 
-watch(
-	() => form.value.id_document_type,
-	(value) => {
-		console.log(value);
-		// if (value) {
-		//   form.value.document = "";
-		// }
-	},
-);
-
-withDefaults(
+const { listTypeDoc } = withDefaults(
 	defineProps<{
+		search?: boolean;
 		disabled?: boolean;
 		createButton?: boolean;
 		listTypeDoc?: any[];
@@ -75,89 +62,77 @@ withDefaults(
 		createButton: true,
 	},
 );
-const search = ref(false);
 
-const {
-	executeRequest: find,
-	error: errorFind,
-	loading: loadingFind,
-	result: resultFind,
-} = useHttp();
+interface ResultDocumentItem {
+	id: string;
+	name: string;
+	status: number;
+	created_at: string;
+	updated_at: string;
+	deleted_at: string | null;
+}
 
-// const rules = {
-//   name: {
-//     required,
-//     minLength: minLength(3),
-//     $autoDirty: true,
-//   },
-//   last_name: {
-//     required,
-//     minLength: minLength(3),
-//     $autoDirty: true,
-//   },
-//   id_document_type: {
-//     required,
-//     minLength: minLength(3),
-//     $autoDirty: true,
-//   },
-//   document: {
-//     required,
-//     minLength: minLength(3),
-//     $autoDirty: true,
-//   },
-//   cell_phone: {
-//     required,
-//     minLength: minLength(3),
-//     $autoDirty: true,
-//   },
-//   mail: {
-//     required,
-//     minLength: minLength(3),
-//     email,
-//     $autoDirty: true,
-//   },
-//   ocupation: {
-//     required,
-//     minLength: minLength(3),
-//     $autoDirty: true,
-//   },
-// };
+interface ApiDocumentResponse {
+	result: ResultDocumentItem[];
+}
+const defaultResultDocumentItem: ResultDocumentItem = {
+	id: "",
+	name: "",
+	status: 0,
+	created_at: "",
+	updated_at: "",
+	deleted_at: null,
+};
+
+const search = ref(true);
+const typeOfDocument = ref("");
+const inputFindRef = ref<ApiDocumentResponse>({
+	result: [defaultResultDocumentItem],
+});
 
 const emit = defineEmits<{
 	(e: "findClient", id: string): void;
 	(e: "submit"): void;
 	(e: "sendCloseModal"): void;
 }>();
-const searchClient = async () => {
+const searchDNIClient = async () => {
 	if (!form.value.id_document_type || !form.value.document) {
 		return alert("Especifica el tipo y número de documento");
 	}
-	await find(form.value.document);
-	if (errorFind.value) {
-		return;
+
+	if (typeOfDocument.value === "dni") {
+		await findDNI(form.value.document);
+		if (errorFindDNI.value) return;
+		form.value.name = resultFindDNI.value.data.NOMBRES;
+		form.value.last_name = `${resultFindDNI.value.data.AP_PAT} ${resultFindDNI.value.data.AP_MAT}`;
+	}
+	if (typeOfDocument.value === "pasaporte") {
+		findClient(
+			METHOD_HTTP.GET,
+			`clientbydni/${form.value.id_document_type}/${form.value.document}`,
+		);
+		return alert("No se puede buscar por RUC");
 	}
 
-	console.log("RESULT FUND", resultFind.value);
-	form.value.name = resultFind.value.data.NOMBRES;
-	form.value.last_name = `${resultFind.value.data.AP_PAT}·${resultFind.value.data.AP_MAT}`;
-	form.value.cell_phone = "923456788";
-	form.value.mail = "default@gmail.com";
-	form.value.ocupation = "DEFAULT";
-	// form.value = resultFind.value;
-	emit("findClient", resultFind.value.id);
+	// form.value = resultFindDNI.value;
+	emit("findClient", resultFindDNI.value.id);
 };
 
-const updateSelect = (value: any) => {
-	console.log("value", value);
-	if (value) {
-		search.value = true;
-	} else {
-		search.value = false;
-	}
-	// value ? (search.value = true) : (search.value = false);
-};
-
-// const $form = useVuelidate(rules, form);
+watch(
+	() => form.value.id_document_type,
+	(value) => {
+		const item = inputFindRef.value.result.find(
+			(item: ResultDocumentItem) => item.id === form.value.id_document_type,
+		);
+		if (!item) return;
+		typeOfDocument.value = item.name.toLowerCase();
+		// search.value = item ? item.name.toLowerCase() === "dni" : false;
+		form.value.id = null;
+		form.value.name = defaultResultDocumentItem.name;
+		form.value.last_name = "";
+		form.value.document = "";
+	},
+);
 
 const onSubmit = () => {
 	emit("submit");
@@ -168,9 +143,11 @@ const sendCloseModal = () => {
 
 defineExpose({
 	clearForm,
+	form: form.value,
 });
 </script>
 <template>
+  <!-- <p class="font-bold mb-4">{{ form }}</p> -->
   <form @submit.prevent="onSubmit">
     <div class="grid grid-cols-2">
       <Select
@@ -179,8 +156,8 @@ defineExpose({
         optionValue="id"
         v-model="form.id_document_type"
         path-get="documentype"
-        @updateSelect="updateSelect"
         :data="listTypeDoc"
+        ref="inputFindRef"
       />
       <Input
         id="clientMaintenance"
@@ -188,7 +165,8 @@ defineExpose({
         type="text"
         v-model="form.document"
         :search="search"
-        @searchClick="searchClient"
+        @searchClick="searchDNIClient"
+        :disabled="disabled || form.id_document_type === ''"
       />
 
       <Input
@@ -196,15 +174,27 @@ defineExpose({
         label="nombres"
         type="text"
         v-model="form.name"
-        :disabled="disabled"
       />
+      <!-- <Input
+        id="clientMaintenance"
+        label="nombres"
+        type="text"
+        v-model="form.name"
+        :disabled="disabled || search"
+      /> -->
       <Input
         id="clientMaintenance"
         label="Apellidos"
         type="text"
-        :disabled="disabled"
         v-model="form.last_name"
       />
+      <!-- <Input
+        id="clientMaintenance"
+        label="Apellidos"
+        type="text"
+        :disabled="disabled || search"
+        v-model="form.last_name"
+      /> -->
 
       <!-- <Input
         id="clientMaintenance"

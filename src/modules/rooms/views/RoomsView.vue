@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import SelectComponent from "@components/SelectComponent.vue";
 import iLoader from "@icon/loader-blue.svg";
+import FilterRooms from "@room/components/FilterRooms.vue";
+import ModalRoom from "@room/components/ModalRoom.vue";
 import RoomCard from "@room/components/RoomCard.vue";
-import { ref } from "vue";
-// import { useData } from "@composables/getListComposable";
-import { onMounted } from "vue";
+import type { RoomResponse } from "@room/types/IRooms";
+import { onMounted, ref } from "vue";
 
 import { useFilter } from "@room/composables/filterRoomComposable";
-// import { useDocumentType } from "@composables/getListDocumentType";
 
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
@@ -34,6 +33,8 @@ const statusRoomComponent = ref<StatusRoom>({
 	result: [{ id: "", color: "" }],
 });
 
+const statusModal = ref("available");
+
 const returnRooms = async () => {
 	await filterRoom(
 		result,
@@ -52,14 +53,6 @@ const mounted = async () => {
 onMounted(async () => {
 	await mounted();
 });
-
-// const filters = [
-//     { id: 1, name: "Limpieza", color: "0A2749" },
-//     { id: 2, name: "Disponible", color: "CC922F" },
-//     { id: 3, name: "Contrato", color: "CAA45D" },
-//     { id: 4, name: "Ocupado", color: "DA3939" },
-// ];
-
 const getColorForRoom = (idFilter: string) => {
 	const filter = statusRoomComponent.value.result.find(
 		(f) => f.id === idFilter,
@@ -80,7 +73,22 @@ const onCreate = async () => {
 	await mounted();
 };
 
-const formFilters = ref({
+const room = ref<RoomResponse>();
+const isModalOpen = ref(false);
+
+const openModal = (roomSelect: any) => {
+	console.log(roomSelect);
+	isModalOpen.value = true;
+	room.value = roomSelect.room;
+	statusModal.value = roomSelect.status;
+	// room.value = room;
+};
+
+const formFilters = ref<{
+	flat: string;
+	statusRoom: string;
+	categoryRoom: string;
+}>({
 	flat: "",
 	statusRoom: "",
 	categoryRoom: "",
@@ -88,52 +96,16 @@ const formFilters = ref({
 </script>
 <template>
   <div class="w-full h-full">
-    <div class="flex justify-evenly py-5 sm:gap-4 lg:px-5 h-[15%]">
-      <SelectComponent
-        class="w-full"
-        :label="'Piso'"
-        optionLabel="description"
-        optionValue="id"
-        :pathGet="'flat'"
-        v-model="formFilters.flat"
-        @change="returnRooms"
-      />
-      <SelectComponent
-        class="w-full"
-        :label="'Disponibilidad'"
-        optionLabel="description"
-        optionValue="id"
-        :pathGet="'statusroom'"
-        v-model="formFilters.statusRoom"
-        ref="statusRoomComponent"
-        @change="returnRooms"
-      />
-      <SelectComponent
-        class="w-full"
-        :label="'categoria'"
-        optionLabel="description"
-        optionValue="id"
-        :pathGet="'category'"
-        v-model="formFilters.categoryRoom"
-        @change="returnRooms"
-      />
-    </div>
-    <hr class="mx-5 h-[2%]" />
+    <FilterRooms
+      v-model:flat="formFilters.flat"
+      v-model:status-room="formFilters.statusRoom"
+      v-model:category-room="formFilters.categoryRoom"
+      v-model:status-room-component="statusRoomComponent"
+      @change="returnRooms"
+      @cleanFilters="cleanFilters"
+    />
     <div
-      class="flex justify-end mx-5 mt-3 sm:mr-6 h-[4%]"
-      v-if="
-        formFilters.categoryRoom || formFilters.flat || formFilters.statusRoom
-      "
-    >
-      <button
-        @click="cleanFilters"
-        class="px-3 py-2 bg-primary-danger-100 rounded-lg text-white text-xs"
-      >
-        X Quitar Filtros
-      </button>
-    </div>
-    <div
-      :class="`flex flex-col w-full sm:px-10 overflow-y-auto py-5 ${
+      :class="`flex flex-col w-full sm:px-10 overflow-y-auto${
         formFilters.categoryRoom || formFilters.flat || formFilters.statusRoom
           ? 'h-[77%]'
           : 'h-[82%]'
@@ -144,33 +116,29 @@ const formFilters = ref({
           v-for="(flat, key) in roomsResult"
           v-if="Object.keys(roomsResult).length != 0"
         >
-          <span class="font-semibold text-sm px-5">{{ key }}</span>
-          <div
-            class="flex justify-center sm:justify-start py-5 gap-3 sm:gap-5 flex-wrap"
-          >
-            <template
-              v-for="(room, index) in flat"
-              :key="index"
-              v-if="flat.length > 0"
+          <div class="bg-white mb-5 py-5 rounded-lg">
+            <span class="font-normal text-sm px-5">{{ key }}</span>
+            <div
+              class="flex justify-center sm:justify-start py-5 gap-3 sm:gap-5 flex-wrap px-3"
             >
-              <RoomCard
-                @onCreate="onCreate"
-                :services-room="room.services"
-                :status="room.id_status_room"
-                :number="room.number"
-                :flat-name="room.flat_name"
-                :category-name="room.category_name"
-                :color="getColorForRoom(room.id_status_room)"
-                :idroom="room.id"
-                :document-types="documentTypes"
-                :label-status="room.status_room_info.description"
-              />
-            </template>
-            <template v-else>
-              <div class="w-full">
-                <h1 class="text-xl text-center">No existen habitaciones</h1>
-              </div>
-            </template>
+              <template
+                v-for="(room, index) in flat"
+                :key="index"
+                v-if="flat.length > 0"
+              >
+                <RoomCard
+                  :data="room"
+                  :color="getColorForRoom(room.id_status_room)"
+                  :number="room.number"
+                  @openModal="openModal"
+                />
+              </template>
+              <template v-else>
+                <div class="w-full">
+                  <h1 class="text-xl text-center">No existen habitaciones</h1>
+                </div>
+              </template>
+            </div>
           </div>
         </template>
         <template v-else>
@@ -189,4 +157,20 @@ const formFilters = ref({
       </template>
     </div>
   </div>
+
+  <ModalRoom
+    v-model:isModalOpen="isModalOpen"
+    :color="room ? getColorForRoom(room.id_status_room) : ''"
+    :number="room ? room.number : 0"
+    @onCreate="onCreate"
+    :services-room="room ? room.services : []"
+    :status="room ? room.id_status_room : ''"
+    :flat-name="room ? room.flat_name : ''"
+    :category-name="room ? room.category_name : ''"
+    :idroom="room ? room.id : ''"
+    :document-types="documentTypes"
+    :label-status="room ? room.status_room_info.description : ''"
+    v-model:statusModal="statusModal"
+  >
+  </ModalRoom>
 </template>

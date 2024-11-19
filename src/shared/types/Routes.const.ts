@@ -1,7 +1,7 @@
 const path = "/icon/";
 export const Routes = [
-	{ href: "/", icon: `${path}iDashboard.svg`, text: "Dashboard" },
-	{ href: "/rooms", icon: `${path}iRoom.svg`, text: "Habitaciones" },
+	// { href: "/", icon: `${path}iDashboard.svg`, text: "Dashboard" },
+	{ href: "/", icon: `${path}iRoom.svg`, text: "Habitaciones" },
 	{
 		href: "/maintenance",
 		icon: `${path}iSupport.svg`,

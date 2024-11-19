@@ -26,12 +26,9 @@ const crudComponent = ref();
 
 const initialFormClient = {
 	id: "",
-	cell_phone: "",
 	document: "",
 	last_name: "",
-	mail: "",
 	name: "",
-	ocupation: "",
 	id_document_type: "",
 	status: null,
 };
@@ -98,8 +95,8 @@ makeData();
   <CrudLayout
     title="Clientes"
     :data="result"
-    :headers="['Nombre', 'Apellidos', 'Teléfono', 'N° Doc']"
-    :columns="['name', 'last_name', 'cell_phone', 'document']"
+    :headers="['Nombre', 'Apellidos', 'N° Doc']"
+    :columns="['name', 'last_name', 'document']"
     :search="['name', 'document', 'last_name']"
     :loading="loading"
     @openModal="handleOpenModal"
@@ -116,9 +113,6 @@ makeData();
         v-model:last_name="formClient.last_name"
         v-model:id_document_type="formClient.id_document_type"
         v-model:document="formClient.document"
-        v-model:cell_phone="formClient.cell_phone"
-        v-model:mail="formClient.mail"
-        v-model:ocupation="formClient.ocupation"
       />
     </template>
 
@@ -131,9 +125,6 @@ makeData();
         v-model:last_name="formClient.last_name"
         v-model:id_document_type="formClient.id_document_type"
         v-model:document="formClient.document"
-        v-model:cell_phone="formClient.cell_phone"
-        v-model:mail="formClient.mail"
-        v-model:ocupation="formClient.ocupation"
       />
     </template>
   </CrudLayout>
