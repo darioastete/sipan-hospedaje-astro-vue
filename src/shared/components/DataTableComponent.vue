@@ -90,7 +90,10 @@ defineExpose({
             >
               {{ row[col] }}
             </td>
-            <td v-if="$slots.actions" class="flex gap-1 justify-center py-4">
+            <td
+              v-if="$slots.actions"
+              class="flex gap-1 justify-center py-4 items-center"
+            >
               <slot name="actions" :item="row"></slot>
 
               <ButtonComponent

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import ButtonComponent from "@components/ButtonComponent.vue";
 import CrudLayout from "@layout/CrudLayout.vue";
 
 import formComponent from "@maroom/components/formRoomComponent.vue";
 // import type { RoomResponse } from "../types/room.response";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
@@ -28,6 +29,13 @@ const {
 	executeRequest: remove,
 	loading: loadingRemove,
 	error: errorRemove,
+} = useHttp();
+
+const {
+	executeRequest: swapStatus,
+	loading: loadingDisableRoom,
+	result: resultDisableRoom,
+	error: errorDisableRoom,
 } = useHttp();
 
 const crudComponent = ref();
@@ -87,10 +95,10 @@ const makeData = async () => {
 };
 
 const createItem = async () => {
-	console.log("esta aqui?");
+	// console.log("esta aqui?");
 	await create(METHOD_HTTP.POST, "room", undefined, form.value);
 	if (errorCreate.value) {
-		console.log("error");
+		// console.log("error");
 		return;
 	}
 	sendCloseModal();
@@ -113,7 +121,24 @@ const handleConfirmationModal = async (itemDelete: any) => {
 	sendCloseModal();
 };
 
-makeData();
+const switchRoom = async (item: any) => {
+	const status = item.status_room_info.description.toLowerCase();
+	const routePath = status === "mantenimiento" ? "enableroom" : "disableroom";
+	// console.log(item);
+	await swapStatus(METHOD_HTTP.GET, routePath, item.id);
+	if (errorDisableRoom.value) return;
+	makeData();
+};
+
+onMounted(() => {
+	makeData();
+});
+
+const roomAvailable = () =>
+	`<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-toggle-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 9a3 3 0 1 1 -3 3l.005 -.176a3 3 0 0 1 2.995 -2.824" /><path d="M16 5a7 7 0 0 1 0 14h-8a7 7 0 0 1 0 -14zm0 2h-8a5 5 0 1 0 0 10h8a5 5 0 0 0 0 -10" /></svg>`;
+
+const roomDisabled = () =>
+	`<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-toggle-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16 9a3 3 0 1 1 -3 3l.005 -.176a3 3 0 0 1 2.995 -2.824" /><path d="M16 5a7 7 0 0 1 0 14h-8a7 7 0 0 1 0 -14zm0 2h-8a5 5 0 1 0 0 10h8a5 5 0 0 0 0 -10" /></svg>`;
 </script>
 <template>
   <CrudLayout
@@ -127,7 +152,18 @@ makeData();
     @confirmationModal="handleConfirmationModal"
     ref="crudComponent"
   >
-    <template v-slot:actionsRow="{ item }" />
+    <template v-slot:actionsRow="{ item }">
+      <button class="" @click="switchRoom(item)">
+        <div
+          class="text-red-700"
+          v-html="roomAvailable()"
+          v-if="
+            item.status_room_info.description.toLowerCase() === 'mantenimiento'
+          "
+        ></div>
+        <div class="text-green-700" v-html="roomDisabled()" v-else></div>
+      </button>
+    </template>
     <template v-slot:newModal="{ item }">
       <formComponent
         @sumbit="createItem"

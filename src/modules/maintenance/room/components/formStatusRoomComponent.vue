@@ -10,6 +10,7 @@ import { onMounted } from "vue";
 
 const description = defineModel("description");
 const color = defineModel("color");
+defineEmits(["sumbit", "sendCloseModal"]);
 
 const form = ref({
 	description,

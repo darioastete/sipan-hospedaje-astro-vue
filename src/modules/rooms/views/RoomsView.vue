@@ -77,7 +77,7 @@ const room = ref<RoomResponse>();
 const isModalOpen = ref(false);
 
 const openModal = (roomSelect: any) => {
-	console.log(roomSelect);
+	// console.log(roomSelect);
 	isModalOpen.value = true;
 	room.value = roomSelect.room;
 	statusModal.value = roomSelect.status;

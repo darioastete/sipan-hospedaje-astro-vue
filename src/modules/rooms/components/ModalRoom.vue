@@ -57,7 +57,7 @@ interface Props {
 	servicesRoom: any[];
 }
 
-const statusModal = defineModel<string>("statusModal");
+const statusModal = defineModel("statusModal");
 
 watch(statusModal, (value) => {
 	if (value === "ocuped") {
@@ -79,7 +79,7 @@ const finishStadys = async () => {
 };
 
 const enableRoom = async () => {
-	await update(METHOD_HTTP.PUT, "enableroom", propsProxy.idroom, {});
+	await update(METHOD_HTTP.GET, "enableroom", propsProxy.idroom);
 	if (errorUpdate.value) return;
 	closeModal();
 	emit("onCreate");
@@ -102,9 +102,8 @@ const enableRoom = async () => {
             class="w-40 hidden sm:block"
             alt="Hospedaje Sipan"
           />
-          {{ statusModal }}
           <span
-            class="px-5 py-2 border-b-8 rounded-lg border sm:text-2xl font-semibold shadow-md"
+            class="px-5 py-2 border-b-8 rounded-lg border sm:text-md font-semibold shadow-md"
             :style="`border-color: ${color}; color: ${color}`"
             >{{ labelStatus }}</span
           >
@@ -151,8 +150,11 @@ const enableRoom = async () => {
             />
           </div>
         </div>
-        <div class="sm:w-[70%]" v-if="statusModal !== 'cleaning'">
-          <h1 class="text-2xs sm:text-2xl font-semibold hidden sm:block">
+        <div
+          class="sm:w-[70%]"
+          v-if="statusModal !== 'cleaning' && statusModal !== 'mantenimiento'"
+        >
+          <h1 class="text-2xs sm:text-xl font-semibold hidden sm:block">
             Detalles
           </h1>
           <template v-if="statusModal === 'ocuped'">
@@ -160,6 +162,7 @@ const enableRoom = async () => {
               <span class="sm:text-lg text-primary-yellow-300 mb-3">
                 Cliente
               </span>
+              <!-- {{ form }} -->
               <div class="text-xs flex gap-4 justify-between mb-4">
                 <span
                   ><span class="font-semibold">Nombre:</span>
@@ -171,12 +174,12 @@ const enableRoom = async () => {
                   {{ form.client.document }}</span
                 >
               </div>
-              <div class="text-xs flex gap-4 justify-between mb-4">
+              <!-- <div class="text-xs flex gap-4 justify-between mb-4">
                 <span
                   ><span class="font-semibold">Celular:</span>
                   {{ form.client.cell_phone }}</span
                 >
-              </div>
+              </div> -->
             </section>
             <section class="flex flex-col mt-3 shadow-lg px-5 py-4 rounded-md">
               <h2 class="text-lg text-primary-yellow-300 mb-3">
@@ -219,7 +222,7 @@ const enableRoom = async () => {
             </div>
           </template>
           <FormStayComponent
-            v-else
+            v-if="statusModal === 'available'"
             ref="formStayRef"
             :list-type-doc="documentTypes"
             :room-id-sel="idroom"

@@ -16,6 +16,8 @@ const id_category = defineModel("id_category");
 const id_flat = defineModel("id_flat");
 const services = defineModel("services", { type: Array, default: [] });
 
+defineEmits(["sumbit", "sendCloseModal"]);
+
 const form = ref({
 	number,
 	cost,

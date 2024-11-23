@@ -18,11 +18,14 @@ const openModal = () => {
 		case "limpieza":
 			emit("openModal", { room: data, status: "cleaning" });
 			break;
+		case "mantenimiento":
+			emit("openModal", { room: data, status: "mantenimiento" });
+			break;
 		default:
 			emit("openModal", { room: data, status: "available" });
 			break;
 	}
-	console.log(data);
+	//   console.log(data);
 	// emit("openModal", { typeModal: "ocuped" });
 	// emit("openModal", { typeModal: "clean" });
 	// isModalOpen.value = true;

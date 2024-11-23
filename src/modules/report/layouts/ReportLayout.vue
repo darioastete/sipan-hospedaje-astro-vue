@@ -45,6 +45,7 @@ onMounted(async () => {
 </script>
 <template>
   <div class="py-5 px-5">
+    <p>{{ form }}</p>
     <h2 class="text-xl font-semibold mb-5 mt-5">{{ title }}</h2>
     <form @submit.prevent="getReportForComposable" class="mb-5">
       <div class="flex flex-col sm:flex-row items-center justify-around">

@@ -8,16 +8,16 @@ import Select from "@components/SelectComponent.vue";
 import { ref, watch } from "vue";
 // import { useFindData } from "@composables/findComposable";
 
-import { useHttpDNI } from "@composables/useHttpDNI.composable";
+// import { useHttpDNI } from "@composables/useHttpDNI.composable";
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
 
-const {
-	executeRequest: findDNI,
-	error: errorFindDNI,
-	loading: loadingFindDNI,
-	result: resultFindDNI,
-} = useHttpDNI();
+// const {
+//   executeRequest: findDNI,
+//   error: errorFindDNI,
+//   loading: loadingFindDNI,
+//   result: resultFindDNI,
+// } = useHttpDNI();
 
 const {
 	executeRequest: findClient,
@@ -100,39 +100,62 @@ const searchDNIClient = async () => {
 		return alert("Especifica el tipo y número de documento");
 	}
 
-	if (typeOfDocument.value === "dni") {
-		await findDNI(form.value.document);
-		if (errorFindDNI.value) return;
-		form.value.name = resultFindDNI.value.data.NOMBRES;
-		form.value.last_name = `${resultFindDNI.value.data.AP_PAT} ${resultFindDNI.value.data.AP_MAT}`;
-	}
-	if (typeOfDocument.value === "pasaporte") {
-		findClient(
-			METHOD_HTTP.GET,
-			`clientbydni/${form.value.id_document_type}/${form.value.document}`,
-		);
-		return alert("No se puede buscar por RUC");
-	}
+	//   if (typeOfDocument.value === "dni") {
+	//     await findDNI(form.value.document);
+	//     if (errorFindDNI.value) return;
+	//     form.value.name = resultFindDNI.value.data.NOMBRES;
+	//     form.value.last_name = `${resultFindDNI.value.data.AP_PAT} ${resultFindDNI.value.data.AP_MAT}`;
+	//   }
+	//   if (typeOfDocument.value === "pasaporte") {
+	findClient(
+		METHOD_HTTP.GET,
+		`clientbydni/${form.value.id_document_type}/${form.value.document}`,
+	);
+
+	if (errorFindClient.value) return;
+
+	//   return alert("No se puede buscar por RUC");
+	//   }
 
 	// form.value = resultFindDNI.value;
-	emit("findClient", resultFindDNI.value.id);
+	//   emit("findClient", resultFindDNI.value.id);
 };
 
+watch(resultFindClient, (newValue) => {
+	if (!newValue) {
+		search.value = false;
+		return;
+	}
+	form.value.id = newValue.id;
+	form.value.name = newValue.name;
+	form.value.last_name = newValue.last_name;
+	form.value.document = newValue.document;
+});
+
 watch(
-	() => form.value.id_document_type,
+	() => form.value.document,
 	(value) => {
-		const item = inputFindRef.value.result.find(
-			(item: ResultDocumentItem) => item.id === form.value.id_document_type,
-		);
-		if (!item) return;
-		typeOfDocument.value = item.name.toLowerCase();
-		// search.value = item ? item.name.toLowerCase() === "dni" : false;
+		search.value = true;
 		form.value.id = null;
-		form.value.name = defaultResultDocumentItem.name;
+		form.value.name = "";
 		form.value.last_name = "";
-		form.value.document = "";
 	},
 );
+// watch(
+//   () => form.value.id_document_type,
+//   (value) => {
+//     const item = inputFindRef.value.result.find(
+//       (item: ResultDocumentItem) => item.id === form.value.id_document_type
+//     );
+//     if (!item) return;
+//     typeOfDocument.value = item.name.toLowerCase();
+//     // search.value = item ? item.name.toLowerCase() === "dni" : false;
+//     form.value.id = null;
+//     form.value.name = defaultResultDocumentItem.name;
+//     form.value.last_name = "";
+//     form.value.document = "";
+//   }
+// );
 
 const onSubmit = () => {
 	emit("submit");
@@ -147,7 +170,6 @@ defineExpose({
 });
 </script>
 <template>
-  <!-- <p class="font-bold mb-4">{{ form }}</p> -->
   <form @submit.prevent="onSubmit">
     <div class="grid grid-cols-2">
       <Select
@@ -169,32 +191,32 @@ defineExpose({
         :disabled="disabled || form.id_document_type === ''"
       />
 
-      <Input
-        id="clientMaintenance"
-        label="nombres"
-        type="text"
-        v-model="form.name"
-      />
       <!-- <Input
         id="clientMaintenance"
         label="nombres"
         type="text"
         v-model="form.name"
-        :disabled="disabled || search"
       /> -->
       <Input
         id="clientMaintenance"
-        label="Apellidos"
+        label="nombres"
         type="text"
-        v-model="form.last_name"
+        v-model="form.name"
+        :disabled="disabled || search || form.id_document_type === ''"
       />
       <!-- <Input
         id="clientMaintenance"
         label="Apellidos"
         type="text"
-        :disabled="disabled || search"
         v-model="form.last_name"
       /> -->
+      <Input
+        id="clientMaintenance"
+        label="Apellidos"
+        type="text"
+        :disabled="disabled || search || form.id_document_type === ''"
+        v-model="form.last_name"
+      />
 
       <!-- <Input
         id="clientMaintenance"
