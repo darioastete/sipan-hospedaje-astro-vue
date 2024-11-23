@@ -159,6 +159,7 @@ const formFilters = ref<{
   </div>
 
   <ModalRoom
+    v-if="isModalOpen"
     v-model:isModalOpen="isModalOpen"
     :color="room ? getColorForRoom(room.id_status_room) : ''"
     :number="room ? room.number : 0"

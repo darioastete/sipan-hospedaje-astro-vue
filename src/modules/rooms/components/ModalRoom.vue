@@ -7,7 +7,7 @@ import formClientComponent from "@maintenance/client/components/formClientCompon
 import FormStayComponent from "@room/components/formStayComponent.vue";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
 
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 const { executeRequest: create, error: errorCreate } = useHttp();
 const { executeRequest: remove, error: errorRemove } = useHttp();
 const { executeRequest: update, error: errorUpdate } = useHttp();
@@ -59,11 +59,6 @@ interface Props {
 
 const statusModal = defineModel("statusModal");
 
-watch(statusModal, (value) => {
-	if (value === "ocuped") {
-		findData();
-	}
-});
 const propsProxy = defineProps<Props>();
 
 const formStayRef = ref();
@@ -84,6 +79,12 @@ const enableRoom = async () => {
 	closeModal();
 	emit("onCreate");
 };
+
+onMounted(() => {
+	if (statusModal.value === "ocuped") {
+		findData();
+	}
+});
 </script>
 <template>
   <ModalComponent
@@ -166,12 +167,12 @@ const enableRoom = async () => {
               <div class="text-xs flex gap-4 justify-between mb-4">
                 <span
                   ><span class="font-semibold">Nombre:</span>
-                  {{ form.client.name }}
-                  {{ form.client.last_name }}</span
+                  {{ form.client?.name }}
+                  {{ form.client?.last_name }}</span
                 >
                 <span
                   ><span class="font-semibold">DNI:</span>
-                  {{ form.client.document }}</span
+                  {{ form.client?.document }}</span
                 >
               </div>
               <!-- <div class="text-xs flex gap-4 justify-between mb-4">
