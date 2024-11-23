@@ -1,9 +1,9 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 
+import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 import AstroPWA from "@vite-pwa/astro";
-import sitemap from "@astrojs/sitemap";
 import compress from "astro-compress";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { manifest } from "./src/shared/utils/manifest";
@@ -17,7 +17,7 @@ export default defineConfig({
 	},
 	compressHTML: true,
 	prefetch: true,
-	site: "https://example.com",
+	site: "https://sipan-hospedaje-astro-vue.vercel.app",
 	integrations: [
 		AstroPWA({
 			mode: "production",
@@ -31,6 +31,7 @@ export default defineConfig({
 			},
 			workbox: {
 				globPatterns: ["**/*.{css,js,html,svg,png,ico,txt,woff,woff2}"],
+				globIgnores: ["404.html"], // Excluir 404.html
 				runtimeCaching: [
 					{
 						urlPattern: /^https:\/\/fonts\.googleapis\.com/,
