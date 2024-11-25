@@ -50,7 +50,7 @@ const clearForm = () => {
 	// $form.value.$reset();
 };
 
-const { listTypeDoc } = withDefaults(
+withDefaults(
 	defineProps<{
 		search?: boolean;
 		disabled?: boolean;
