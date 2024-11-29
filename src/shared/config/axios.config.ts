@@ -1,5 +1,16 @@
 import axios from "axios";
 
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
+
+const notyf = new Notyf({
+	duration: 4000,
+	position: {
+		x: "right",
+		y: "top",
+	},
+});
+
 const instance = axios.create({
 	//   baseURL: "http://localhost:8000/api/v1",
 	baseURL: import.meta.env.PUBLIC_VITE_URL_BACKEND, // Cambia la URL base según tu configuración
@@ -29,43 +40,48 @@ instance.interceptors.request.use(
 	},
 );
 
-// instance.interceptors.response.use(
-//   (response) => {
-//     // Lógica para interceptar y modificar la respuesta antes de resolverla
-//     if (response.status >= 200 && response.status < 300) {
-//       // Verifica si la solicitud no fue de tipo POST
-//       if (response.config.method !== "get") {
-//         // Realiza acciones adicionales con la respuesta satisfactoria
-//         ModalService.openModal("success", response.data.message);
-//       }
-//     }
-//     return response;
-//   },
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       // Si la respuesta tiene un código de estado 401 (no autorizado),
-//       // redirige al usuario a la página de inicio de sesión
-//       // ModalService.openModal("error", "Inicie sesión");
-//       router.push("/login"); // Cambia '/login' por la ruta de tu pantalla de inicio de sesión
-//     } else {
-//       if (error.response.data) {
-//         if (error.response.data.errors) {
-//           const errors = error.response.data.errors;
-//           for (const fieldError in errors) {
-//             console.log(fieldError);
-//             if (Object.hasOwnProperty.call(errors, fieldError)) {
-//               ModalService.openModal("error", errors[fieldError][0]);
-//             }
-//           }
-//         } else {
-//           ModalService.openModal("error", error.response.data.message);
-//         }
-//       } else {
-//         ModalService.openModal("error", error.message);
-//       }
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+instance.interceptors.response.use(
+	(response) => {
+		// Lógica para interceptar y modificar la respuesta antes de resolverla
+		if (response.status >= 200 && response.status < 300) {
+			// Verifica si la solicitud no fue de tipo POST
+			if (response.config.method !== "get") {
+				// Realiza acciones adicionales con la respuesta satisfactoria
+				// ModalService.openModal("success", response.data.message);
+				notyf.success(`${response.data.message}`);
+			}
+		}
+		return response;
+	},
+	(error) => {
+		if (error.response && error.response.status === 401) {
+			// Si la respuesta tiene un código de estado 401 (no autorizado),
+			// redirige al usuario a la página de inicio de sesión
+			// ModalService.openModal("error", "Inicie sesión");
+			//   router.push("/login"); // Cambia '/login' por la ruta de tu pantalla de inicio de sesión
+		} else {
+			if (error.response.data) {
+				if (error.response.data.errors) {
+					const errors = error.response.data.errors;
+					for (const fieldError in errors) {
+						console.log(fieldError);
+						if (Object.hasOwnProperty.call(errors, fieldError)) {
+							notyf.error(`${errors[fieldError][0]}`);
+
+							//   ModalService.openModal("error", errors[fieldError][0]);
+						}
+					}
+				} else {
+					notyf.error(`${error.response.data.message}`);
+					//   ModalService.openModal("error", error.response.data.message);
+				}
+			} else {
+				notyf.error(`${error.message}`);
+				// ModalService.openModal("error", error.message);
+			}
+		}
+		return Promise.reject(error);
+	},
+);
 
 export default instance;

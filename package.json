@@ -24,6 +24,7 @@
 		"@vuelidate/core": "^2.0.3",
 		"@vuelidate/validators": "^2.0.4",
 		"axios": "^1.7.7",
+		"notyf": "^3.10.0",
 		"vue": "^3.5.10"
 	},
 	"devDependencies": {

@@ -5,11 +5,11 @@ const httpClient = new HttpClientModule();
 export const auth = async (payload: any): Promise<any> => {
 	try {
 		const response = await httpClient.post("/login", payload);
-		console.log("eta entrando aqui?");
+		// console.log("eta entrando aqui?");
 		return response;
 	} catch (error) {
 		console.log(error);
-		alert("Invalid username or password");
+		// alert("Invalid username or password");
 		throw error;
 	}
 	//   return httpClient.post("/login", payload);
