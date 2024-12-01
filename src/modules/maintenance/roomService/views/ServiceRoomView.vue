@@ -43,7 +43,6 @@ const handleOpenModal = (item: any) => {
 const formComponentRef = ref();
 const resetForm = () => {
 	form.value = { ...initialForm };
-	formComponentRef.value.clearForm();
 };
 
 const sendCloseModal = () => {

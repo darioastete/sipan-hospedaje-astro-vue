@@ -88,6 +88,9 @@ defineExpose({
         @confirmationModal="emit('confirmationModal', $event)"
         ref="child"
       >
+        <template v-slot:additional="{ item }" v-if="$slots.additional">
+          <slot name="additional" :item="item"></slot>
+        </template>
         <template v-slot:actions="{ item }" v-if="$slots.actionsRow">
           <slot name="actionsRow" :item="item"></slot>
         </template>

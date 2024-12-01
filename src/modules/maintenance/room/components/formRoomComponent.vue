@@ -4,9 +4,7 @@ import Input from "@components/InputComponent.vue";
 import Select from "@components/SelectComponent.vue";
 import checkBoxServiceComponent from "@maroom/components/checkBoxServiceComponent.vue";
 
-import { useVuelidate } from "@vuelidate/core";
-import { decimal, required } from "@vuelidate/validators";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import { onMounted } from "vue";
 
@@ -18,42 +16,22 @@ const services = defineModel("services", { type: Array, default: [] });
 
 defineEmits(["sumbit", "sendCloseModal"]);
 
-const form = ref({
-	number,
-	cost,
-	id_category,
-	id_flat,
-	services,
-});
+const numberInput = ref({ isValid: false });
+const costInput = ref({ isValid: false });
 
-const rules = {
-	number: {
-		required,
-		$autoDirty: true,
-	},
-	cost: {
-		required,
-		decimal,
-		$autoDirty: true,
-	},
-	id_category: {
-		required,
-		$autoDirty: true,
-	},
-	id_flat: {
-		required,
-		$autoDirty: true,
-	},
-	services: {
-		required,
-		$autoDirty: true,
-	},
-};
+defineExpose({});
 
-const $form = useVuelidate(rules, form);
+const validForm = computed(() => {
+	const rules = [
+		numberInput.value?.isValid, // Validación del número
+		costInput.value?.isValid, // Validación del costo
+		Boolean(id_category.value), // La categoría debe ser válida
+		Boolean(id_flat.value), // La identificación del flat debe ser válida
+		services.value.length > 0, // Debe haber al menos un servicio seleccionado
+	];
 
-defineExpose({
-	$form,
+	// Verifica si todas las reglas son verdaderas
+	return rules.every((rule) => rule);
 });
 
 onMounted(async () => {});
@@ -64,23 +42,22 @@ onMounted(async () => {});
       <Input
         id="formRoom"
         label="Número"
-        type="text"
-        :has-error="$form.number.$error"
+        type="number"
         v-model="number"
+        ref="numberInput"
       />
       <Input
         id="formRoom"
         label="Costo"
-        type="text"
-        :has-error="$form.cost.$error"
+        type="money"
         v-model="cost"
+        ref="costInput"
       />
 
       <Select
         label="Categoria"
         optionLabel="description"
         optionValue="id"
-        :has-error="$form.id_category.$error"
         v-model="id_category"
         path-get="category"
       />
@@ -88,7 +65,6 @@ onMounted(async () => {});
         label="Piso"
         optionLabel="description"
         optionValue="id"
-        :has-error="$form.id_flat.$error"
         v-model="id_flat"
         path-get="flat"
       />
@@ -101,7 +77,7 @@ onMounted(async () => {});
         @click="$emit('sendCloseModal')"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" :disabled="$form.$invalid" />
+      <Button label="Guardar Cambios" :disabled="!validForm" />
     </div>
   </form>
 </template>

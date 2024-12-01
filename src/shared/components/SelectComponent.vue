@@ -11,6 +11,7 @@ const {
 	optionValue = "value",
 	hasError = false,
 	pathGet,
+	disabled = false,
 } = defineProps<{
 	label: string;
 	data?: any[];
@@ -18,6 +19,7 @@ const {
 	optionValue: string;
 	hasError?: boolean;
 	pathGet?: string;
+	disabled?: boolean;
 }>();
 const modelValue = defineModel();
 
@@ -64,8 +66,9 @@ defineExpose({
     >
     <select
       :id="String(modelValue)"
+      :disabled="disabled"
       v-model="modelValue"
-      :class="`border sm:mb-2 w-full p-2 sm:p-2.5 text-2xs sm:text-xs ${
+      :class="`border sm:mb-2 w-full p-2 sm:p-2.5 text-2xs sm:text-xs  disabled:opacity-75 ${
         hasError
           ? 'bg-red-50 border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 focus:border-red-500'
           : ''

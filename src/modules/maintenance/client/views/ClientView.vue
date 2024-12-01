@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-// import { useData } from "@composables/getListComposable";
-// import { createData } from "@composables/createComposable";
-// import { updateData } from "@composables/updateComposable";
-// import { deleteData } from "@composables/deleteComposable";
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import CrudLayout from "@layout/CrudLayout.vue";
 import formClientComponent from "@maintenance/client/components/formClientComponent.vue";
@@ -22,6 +18,7 @@ const {
 	error: errorRemove,
 	loading: loadingRemove,
 } = useHttp();
+
 const crudComponent = ref();
 
 const initialFormClient = {
@@ -30,6 +27,7 @@ const initialFormClient = {
 	last_name: "",
 	name: "",
 	id_document_type: "",
+	document_info: {},
 	status: null,
 };
 
@@ -49,7 +47,7 @@ const formClientComponentRef = ref({
 });
 const resetForm = () => {
 	formClient.value = { ...initialFormClient };
-	formClientComponentRef.value.clearForm();
+	//   formClientComponentRef.value.clearForm();
 };
 
 const sendCloseModal = () => {
@@ -121,10 +119,12 @@ makeData();
         @submit="editClient"
         @sendCloseModal="sendCloseModal"
         ref="formClientComponentRef"
+        mode="edit"
         v-model:name="formClient.name"
         v-model:last_name="formClient.last_name"
         v-model:id_document_type="formClient.id_document_type"
         v-model:document="formClient.document"
+        :documentInfo="formClient.document_info"
       />
     </template>
   </CrudLayout>

@@ -21,8 +21,6 @@ const total_price = defineModel("total_price", { type: String, default: "" });
 const notes = defineModel("notes", { type: String, default: "" });
 const client = defineModel("client", { type: Object, default: {} });
 
-// const formClientRef = ref();
-
 const { roomIdSel, listTypeDoc } = defineProps<{
 	listTypeDoc: any[];
 	roomIdSel: string;
@@ -167,30 +165,21 @@ const createStay = async () => {
           label="Ingreso"
           type="datetime-local"
           v-model="check_in_date"
-          :has-error="$form.check_in_date.$error"
         />
         <Input
           id="RoomFormStay"
           label="Salida"
           type="datetime-local"
-          :has-error="$form.check_out_date.$error"
           v-model="check_out_date"
         />
         <Input
           id="RoomFormStay"
           label="Total"
-          type="text"
-          :has-error="$form.total_price.$error"
+          type="money"
           v-model="total_price"
         />
 
-        <Input
-          id="RoomFormStay"
-          label="Notas"
-          type="text"
-          :has-error="$form.notes.$error"
-          v-model="notes"
-        />
+        <Input id="RoomFormStay" label="Notas" type="text" v-model="notes" />
       </div>
     </section>
     <div class="flex justify-end gap-2 mt-4">

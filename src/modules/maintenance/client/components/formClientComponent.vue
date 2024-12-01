@@ -3,21 +3,10 @@ import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
 import Select from "@components/SelectComponent.vue";
 
-// import { useVuelidate } from "@vuelidate/core";
-// import { email, minLength, required } from "@vuelidate/validators";
-import { ref, watch } from "vue";
-// import { useFindData } from "@composables/findComposable";
+import { computed, ref, watch } from "vue";
 
-// import { useHttpDNI } from "@composables/useHttpDNI.composable";
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
-
-// const {
-//   executeRequest: findDNI,
-//   error: errorFindDNI,
-//   loading: loadingFindDNI,
-//   result: resultFindDNI,
-// } = useHttpDNI();
 
 const {
 	executeRequest: findClient,
@@ -41,25 +30,31 @@ const form = ref({
 	document,
 });
 
+const nroDocInput = ref({ isValid: false });
+const namesInput = ref({ isValid: false });
+const lastNamesInput = ref({ isValid: false });
+
 const clearForm = () => {
 	form.value.id = null;
 	form.value.name = "";
 	form.value.last_name = "";
 	form.value.id_document_type = "";
 	form.value.document = "";
-	// $form.value.$reset();
 };
 
-withDefaults(
+const { documentInfo, mode, disabled } = withDefaults(
 	defineProps<{
 		search?: boolean;
+		mode?: string;
 		disabled?: boolean;
 		createButton?: boolean;
 		listTypeDoc?: any[];
+		documentInfo?: any;
 	}>(),
 	{
 		disabled: false,
 		createButton: true,
+		mode: "default",
 	},
 );
 
@@ -85,7 +80,7 @@ const defaultResultDocumentItem: ResultDocumentItem = {
 };
 
 const search = ref(true);
-const typeOfDocument = ref("");
+const typeOfDocument = ref();
 const inputFindRef = ref<ApiDocumentResponse>({
 	result: [defaultResultDocumentItem],
 });
@@ -99,26 +94,12 @@ const searchDNIClient = async () => {
 	if (!form.value.id_document_type || !form.value.document) {
 		return alert("Especifica el tipo y número de documento");
 	}
-
-	//   if (typeOfDocument.value === "dni") {
-	//     await findDNI(form.value.document);
-	//     if (errorFindDNI.value) return;
-	//     form.value.name = resultFindDNI.value.data.NOMBRES;
-	//     form.value.last_name = `${resultFindDNI.value.data.AP_PAT} ${resultFindDNI.value.data.AP_MAT}`;
-	//   }
-	//   if (typeOfDocument.value === "pasaporte") {
 	findClient(
 		METHOD_HTTP.GET,
 		`clientbydni/${form.value.id_document_type}/${form.value.document}`,
 	);
 
 	if (errorFindClient.value) return;
-
-	//   return alert("No se puede buscar por RUC");
-	//   }
-
-	// form.value = resultFindDNI.value;
-	//   emit("findClient", resultFindDNI.value.id);
 };
 
 watch(resultFindClient, (newValue) => {
@@ -135,27 +116,26 @@ watch(resultFindClient, (newValue) => {
 watch(
 	() => form.value.document,
 	(value) => {
+		console.log(value, "que es esto?");
 		search.value = true;
 		form.value.id = null;
 		form.value.name = "";
 		form.value.last_name = "";
 	},
 );
-// watch(
-//   () => form.value.id_document_type,
-//   (value) => {
-//     const item = inputFindRef.value.result.find(
-//       (item: ResultDocumentItem) => item.id === form.value.id_document_type
-//     );
-//     if (!item) return;
-//     typeOfDocument.value = item.name.toLowerCase();
-//     // search.value = item ? item.name.toLowerCase() === "dni" : false;
-//     form.value.id = null;
-//     form.value.name = defaultResultDocumentItem.name;
-//     form.value.last_name = "";
-//     form.value.document = "";
-//   }
-// );
+
+watch(
+	() => form.value.id_document_type,
+	(value) => {
+		const item = inputFindRef.value.result.find(
+			(item: ResultDocumentItem) => item.id === form.value.id_document_type,
+		);
+		if (!item) return;
+
+		typeOfDocument.value = item.name.toLowerCase();
+		form.value.document = "";
+	},
+);
 
 const onSubmit = () => {
 	emit("submit");
@@ -163,6 +143,18 @@ const onSubmit = () => {
 const sendCloseModal = () => {
 	emit("sendCloseModal");
 };
+
+if (documentInfo) {
+	typeOfDocument.value = documentInfo.name.toLowerCase();
+	console.log(typeOfDocument.value);
+}
+
+const isEditable = computed(() => {
+	if (mode === "edit") {
+		return true; // Siempre editable en modo "edit"
+	}
+	return !(disabled || search.value || form.value.id_document_type === "");
+});
 
 defineExpose({
 	clearForm,
@@ -180,65 +172,36 @@ defineExpose({
         path-get="documentype"
         :data="listTypeDoc"
         ref="inputFindRef"
+        :disabled="mode === 'edit'"
       />
       <Input
         id="clientMaintenance"
         label="N° Documento"
-        type="text"
+        :type="typeOfDocument"
         v-model="form.document"
-        :search="search"
+        :search="search && mode !== 'edit'"
         @searchClick="searchDNIClient"
-        :disabled="disabled || form.id_document_type === ''"
+        :disabled="disabled || form.id_document_type === '' || mode === 'edit'"
+        ref="nroDocInput"
       />
 
-      <!-- <Input
-        id="clientMaintenance"
-        label="nombres"
-        type="text"
-        v-model="form.name"
-      /> -->
       <Input
         id="clientMaintenance"
         label="nombres"
         type="text"
         v-model="form.name"
-        :disabled="disabled || search || form.id_document_type === ''"
-      />
-      <!-- <Input
-        id="clientMaintenance"
-        label="Apellidos"
-        type="text"
-        v-model="form.last_name"
-      /> -->
-      <Input
-        id="clientMaintenance"
-        label="Apellidos"
-        type="text"
-        :disabled="disabled || search || form.id_document_type === ''"
-        v-model="form.last_name"
+        :disabled="!isEditable"
+        ref="namesInput"
       />
 
-      <!-- <Input
-        id="clientMaintenance"
-        label="Teléfono"
-        type="text"
-        :disabled="disabled"
-        v-model="form.cell_phone"
-      />
       <Input
         id="clientMaintenance"
-        label="correo"
+        label="Apellidos"
         type="text"
-        :disabled="disabled"
-        v-model="form.mail"
+        :disabled="!isEditable"
+        v-model="form.last_name"
+        ref="lastNamesInput"
       />
-      <Input
-        id="clientMaintenance"
-        label="Ocupación"
-        type="text"
-        :disabled="disabled"
-        v-model="form.ocupation"
-      /> -->
     </div>
     <div class="flex justify-end gap-2" v-if="createButton">
       <Button
@@ -247,7 +210,12 @@ defineExpose({
         @click="sendCloseModal"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" />
+      <Button
+        :label="`Guardar Cambios`"
+        :disabled="
+          !nroDocInput.isValid || !namesInput.isValid || !lastNamesInput.isValid
+        "
+      />
     </div>
   </form>
 </template>

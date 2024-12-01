@@ -11,33 +11,12 @@ import { onMounted } from "vue";
 const description = defineModel("description");
 const number = defineModel("number");
 
-const form = ref({
-	description,
-	number,
-});
+const descriptionInput = ref({ isValid: false });
+const numberInput = ref({ isValid: false });
 
-const rules = {
-	description: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	number: {
-		required,
-		$autoDirty: true,
-	},
-};
+defineEmits(["sumbit", "sendCloseModal"]);
 
-const $form = useVuelidate(rules, form);
-
-const clearForm = () => {
-	$form.value.$reset();
-};
-
-defineExpose({
-	$form,
-	clearForm,
-});
+defineExpose({});
 
 onMounted(async () => {});
 </script>
@@ -49,14 +28,14 @@ onMounted(async () => {});
         label="Nombre"
         type="text"
         v-model="description"
-        :has-error="$form.description.$error"
+        ref="descriptionInput"
       />
       <Input
         id="floorMaintenance"
         label="Número"
         type="number"
         v-model="number"
-        :has-error="$form.number.$error"
+        ref="numberInput"
       />
     </div>
     <div class="flex justify-end gap-2">
@@ -67,7 +46,10 @@ onMounted(async () => {});
         @click="$emit('sendCloseModal')"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" :disabled="$form.$invalid" />
+      <Button
+        label="Guardar Cambios"
+        :disabled="!descriptionInput.isValid || !numberInput.isValid"
+      />
     </div>
   </form>
 </template>

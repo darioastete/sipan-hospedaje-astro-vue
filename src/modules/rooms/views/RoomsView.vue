@@ -57,7 +57,7 @@ const getColorForRoom = (idFilter: string) => {
 	const filter = statusRoomComponent.value.result.find(
 		(f) => f.id === idFilter,
 	);
-	return filter?.color ? `#${filter.color}` : "";
+	return filter?.color ? `${filter.color}` : "";
 };
 
 const cleanFilters = () => {

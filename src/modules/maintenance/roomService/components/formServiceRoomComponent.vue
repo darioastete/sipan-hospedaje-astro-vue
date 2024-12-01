@@ -2,38 +2,19 @@
 import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
 
-import { useVuelidate } from "@vuelidate/core";
-import { email, minLength, required } from "@vuelidate/validators";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
-import { onMounted } from "vue";
+import {} from "vue";
 
 const name = defineModel("name");
+const nameInput = ref({ isValid: false });
+defineEmits(["sumbit", "sendCloseModal"]);
 
 const form = ref({
 	name,
 });
 
-const rules = {
-	name: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-};
-
-const $form = useVuelidate(rules, form);
-
-const clearForm = () => {
-	$form.value.$reset();
-};
-
-defineExpose({
-	$form,
-	clearForm,
-});
-
-onMounted(async () => {});
+defineExpose({});
 </script>
 <template>
   <form @submit.prevent="$emit('sumbit')">
@@ -43,7 +24,7 @@ onMounted(async () => {});
         label="Nombre"
         type="text"
         v-model="name"
-        :has-error="$form.name.$error"
+        ref="nameInput"
       />
     </div>
     <div class="flex justify-end gap-1">
@@ -54,7 +35,7 @@ onMounted(async () => {});
         @click="$emit('sendCloseModal')"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" :disabled="$form.$invalid" />
+      <Button label="Guardar Cambios" :disabled="!nameInput.isValid" />
     </div>
   </form>
 </template>

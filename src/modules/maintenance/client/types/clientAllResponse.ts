@@ -13,4 +13,5 @@ export interface Datum {
 	mail?: string;
 	ocupation?: null | string;
 	status: number | null;
+	document_info: object;
 }

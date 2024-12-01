@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-// import { useData } from "@composables/getListComposable";
-// import { createData } from "@composables/createComposable";
-// import { updateData } from "@composables/updateComposable";
-// import { deleteData } from "@composables/deleteComposable";
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import CrudLayout from "@layout/CrudLayout.vue";
 import formComponent from "@maintenance/categoryRoom/components/formRoomCategoryComponent.vue";
@@ -43,7 +39,7 @@ const handleOpenModal = (item: any) => {
 const formComponentRef = ref();
 const resetForm = () => {
 	form.value = { ...initialForm };
-	formComponentRef.value.clearForm();
+	// formComponentRef.value.clearForm();
 };
 
 const sendCloseModal = () => {

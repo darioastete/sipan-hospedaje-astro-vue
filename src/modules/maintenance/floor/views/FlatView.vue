@@ -3,10 +3,6 @@ import { useHttp } from "@composables/useHttpUniversal.composable";
 import CrudLayout from "@layout/CrudLayout.vue";
 import formComponent from "@maintenance/floor/components/formFlatComponent.vue";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
-// import { useData } from "@composables/getListComposable";
-// import { createData } from "@composables/createComposable";
-// import { updateData } from "@composables/updateComposable";
-// import { deleteData } from "@composables/deleteComposable";
 import type { SimpleCrud } from "@type/simple.crud";
 import { ref } from "vue";
 

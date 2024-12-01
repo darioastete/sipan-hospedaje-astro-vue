@@ -1,44 +1,17 @@
 <script setup lang="ts">
 import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
-
-import { useVuelidate } from "@vuelidate/core";
-import { email, minLength, required } from "@vuelidate/validators";
-import { ref } from "vue";
-
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 
 const description = defineModel("description");
 const color = defineModel("color");
+
+const descriptionInputRef = ref<{ isValid: boolean }>({ isValid: false });
+const colorInputRef = ref({ isValid: false });
+
 defineEmits(["sumbit", "sendCloseModal"]);
 
-const form = ref({
-	description,
-	color,
-});
-
-const rules = {
-	description: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	color: {
-		required,
-		$autoDirty: true,
-	},
-};
-
-const $form = useVuelidate(rules, form);
-
-const clearForm = () => {
-	$form.value.$reset();
-};
-
-defineExpose({
-	$form,
-	clearForm,
-});
+defineExpose({});
 
 onMounted(async () => {});
 </script>
@@ -50,14 +23,14 @@ onMounted(async () => {});
         label="Nombre"
         type="text"
         v-model="description"
-        :has-error="$form.description.$error"
+        ref="descriptionInputRef"
       />
       <Input
         id="maintenanceStatusRoom"
         label="Color"
         type="color"
         v-model="color"
-        :has-error="$form.color.$error"
+        ref="colorInputRef"
       />
     </div>
     <div class="flex justify-end gap-2">
@@ -67,7 +40,10 @@ onMounted(async () => {});
         @click="$emit('sendCloseModal')"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" :disabled="$form.$invalid" />
+      <Button
+        label="Guardar Cambios"
+        :disabled="!descriptionInputRef?.isValid || !colorInputRef?.isValid"
+      />
     </div>
   </form>
 </template>

@@ -88,7 +88,13 @@ defineExpose({
                   : ''
               }`"
             >
-              {{ row[col] }}
+              <!-- {{ row[col] }} -->
+              <div v-if="$slots.additional">
+                <slot name="additional" :item="{ row, col }"></slot>
+              </div>
+              <div class="" v-else>
+                {{ row[col] }}
+              </div>
             </td>
             <td
               v-if="$slots.actions"

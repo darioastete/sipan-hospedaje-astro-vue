@@ -24,6 +24,7 @@ const login = async () => {
       class="w-60 sm:w-60 shadow-lg"
       v-model="form.email"
       id="login"
+      :novalidate="true"
     />
     <Input
       label="Contraseña"
@@ -31,6 +32,7 @@ const login = async () => {
       class="w-60 sm:w-60 shadow-lg"
       v-model="form.password"
       id="login"
+      :novalidate="true"
     />
     <Button label="Ingresar" class="shadow-lg" />
   </form>

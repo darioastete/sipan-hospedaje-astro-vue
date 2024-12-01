@@ -14,49 +14,20 @@ const name = defineModel("name");
 const email = defineModel("email");
 const password = defineModel("password");
 
+const nameInput = ref({ isValid: false });
+const emailInput = ref({ isValid: false });
+const passwordInput = ref({ isValid: false });
+
+defineEmits(["sumbit", "sendCloseModal"]);
+
 defineProps<{
 	name: string;
 	email: string;
 	password: string;
 }>();
 
-const form = ref({
-	name,
-	email,
-	password,
-});
-
-const rules = {
-	name: {
-		required,
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-	email: {
-		required,
-		emailValidator,
-		$autoDirty: true,
-	},
-	password: {
-		// required,
-		minLength: minLength(6),
-		$autoDirty: true,
-	},
-};
-
-const $form = useVuelidate(rules, form);
-
-const clearForm = () => {
-	$form.value.$reset();
-};
-
-onMounted(async () => {
-	$form.value.$reset();
-});
-defineExpose({
-	$form,
-	clearForm,
-});
+onMounted(async () => {});
+defineExpose({});
 
 onMounted(async () => {});
 </script>
@@ -68,21 +39,21 @@ onMounted(async () => {});
         label="Nombres"
         type="text"
         v-model="name"
-        :has-error="$form.name.$error"
+        ref="nameInput"
       />
       <Input
         id="formUserComponent"
         label="E-mail"
-        type="mail"
+        type="email"
         v-model="email"
-        :has-error="$form.email.$error"
+        ref="emailInput"
       />
       <Input
         id="formUserComponent"
         label="Contraseña"
         type="password"
         v-model="password"
-        :has-error="$form.password.$error"
+        ref="passwordInput"
       />
     </div>
     <div class="flex justify-end gap-2">
@@ -92,7 +63,12 @@ onMounted(async () => {});
         @click="$emit('sendCloseModal')"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" :disabled="$form.$invalid" />
+      <Button
+        label="Guardar Cambios"
+        :disabled="
+          !nameInput.isValid || !emailInput.isValid || !passwordInput.isValid
+        "
+      />
     </div>
   </form>
 </template>

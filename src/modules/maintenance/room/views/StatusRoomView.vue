@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-// import { useData } from "@composables/getListComposable";
-// import { createData } from "@composables/createComposable";
-// import { updateData } from "@composables/updateComposable";
-// import { deleteData } from "@composables/deleteComposable";
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import CrudLayout from "@layout/CrudLayout.vue";
 import formComponent from "@maroom/components/formStatusRoomComponent.vue";
@@ -44,7 +40,6 @@ const handleOpenModal = (item: any) => {
 const formComponentRef = ref();
 const resetForm = () => {
 	form.value = { ...initialForm };
-	formComponentRef.value.clearForm();
 };
 
 const sendCloseModal = () => {
@@ -72,7 +67,7 @@ const editItem = async () => {
 };
 
 const handleConfirmationModal = async (itemDelete: any) => {
-	await remove("statusroom", itemDelete.id);
+	await remove(METHOD_HTTP.DELETE, "statusroom", itemDelete.id);
 	if (errorRemove.value) return;
 	makeData();
 	sendCloseModal();
@@ -92,7 +87,15 @@ makeData();
     @confirmationModal="handleConfirmationModal"
     ref="crudComponent"
   >
-    <template v-slot:actionsRow="{ item }" />
+    <template v-slot:additional="{ item }">
+      <div v-if="item.col === 'description'">
+        {{ item.row.description }}
+      </div>
+      <div :style="`height: 20px; background-color: ${item.row.color}`" v-else>
+        <!-- {{ item.row.color }} -->
+      </div>
+    </template>
+    <template v-slot:actionsRow="{ item }"> </template>
     <template v-slot:newModal="{ item }">
       <formComponent
         @sumbit="createItem"
