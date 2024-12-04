@@ -156,9 +156,18 @@ const isEditable = computed(() => {
 	return !(disabled || search.value || form.value.id_document_type === "");
 });
 
+const isValid = computed(() => {
+	return (
+		nroDocInput.value.isValid &&
+		namesInput.value.isValid &&
+		lastNamesInput.value.isValid
+	);
+});
+
 defineExpose({
 	clearForm,
 	form: form.value,
+	isValid,
 });
 </script>
 <template>
@@ -210,12 +219,7 @@ defineExpose({
         @click="sendCloseModal"
         label="Cancelar"
       />
-      <Button
-        :label="`Guardar Cambios`"
-        :disabled="
-          !nroDocInput.isValid || !namesInput.isValid || !lastNamesInput.isValid
-        "
-      />
+      <Button :label="`Guardar Cambios`" :disabled="!isValid" />
     </div>
   </form>
 </template>

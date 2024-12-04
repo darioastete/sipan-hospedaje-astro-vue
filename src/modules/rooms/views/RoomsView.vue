@@ -171,6 +171,7 @@ const formFilters = ref<{
     :idroom="room ? room.id : ''"
     :document-types="documentTypes"
     :label-status="room ? room.status_room_info.description : ''"
+    :price="room?.cost ?? 0"
     v-model:statusModal="statusModal"
   >
   </ModalRoom>

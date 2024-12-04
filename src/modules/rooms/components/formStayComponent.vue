@@ -3,9 +3,7 @@ import Button from "@components/ButtonComponent.vue";
 import Input from "@components/InputComponent.vue";
 // import formClientComponent from "@maintenance/client/components/formClientComponent.vue";
 
-import { useVuelidate } from "@vuelidate/core";
-import { minLength, required } from "@vuelidate/validators";
-import { onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 const room_id = defineModel("room_id", { type: String, default: "" });
 const id_client = defineModel("id_client", { type: String, default: "" });
@@ -20,6 +18,7 @@ const check_out_date = defineModel("check_out_date", {
 const total_price = defineModel("total_price", { type: String, default: "" });
 const notes = defineModel("notes", { type: String, default: "" });
 const client = defineModel("client", { type: Object, default: {} });
+const clientref = defineModel("clientref", { default: { isValid: false } });
 
 const { roomIdSel, listTypeDoc } = defineProps<{
 	listTypeDoc: any[];
@@ -50,111 +49,61 @@ const form = ref({
 	client,
 });
 
+const checkInInput = ref({ isValid: false });
+const checkOutInput = ref({ isValid: false });
+const totalInput = ref({ isValid: false });
+const validationError = ref<string | null>(null);
+
 watch(client, (value) => {
 	console.log(value);
 });
 
-// const disabledFormClient = ref(true);
+// Método para validar las fechas
+const validateDates = computed(() => {
+	// Limpiar errores anteriores
+	validationError.value = null;
 
-// const switchEnableFormClient = async (value: boolean) => {
-//   if (value) {
-//     disabledFormClient.value = true;
-//   } else {
-//     disabledFormClient.value = false;
-//   }
-//   form.value.id_client = "";
-//   // formClientRef.value.clearForm();
-// };
-// const rules = {
-//   check_in_date: {
-//     required,
-//     $autoDirty: true,
-//   },
-//   check_out_date: {
-//     required,
-//     $autoDirty: true,
-//   },
-//   total_price: {
-//     required,
-//     $autoDirty: true,
-//   },
-//   notes: {
-//     minLength: minLength(3),
-//     $autoDirty: true,
-//   },
-// };
+	// Convertir las fechas a objetos Date
+	const checkIn = form.value.check_in_date
+		? new Date(form.value.check_in_date)
+		: null;
+	const checkOut = form.value.check_out_date
+		? new Date(form.value.check_out_date)
+		: null;
 
-// const clearForm = () => {
-// 	formClientRef.value.clearForm();
-// 	$form.value.$reset();
-// };
+	if (checkIn && checkOut) {
+		const difference = (checkOut.getTime() - checkIn.getTime()) / (60 * 1000); // Diferencia en minutos
 
-// const findClient = (id: string) => {
-//   form.value.id_client = id;
-//   console.log(form.value);
-// };
+		// Validar que la fecha de salida sea mayor que la de ingreso
+		if (difference <= 0) {
+			validationError.value =
+				"La fecha y hora de salida debe ser mayor a la fecha y hora de ingreso.";
+			return false;
+		}
 
-// const $form = useVuelidate(rules, form);
+		// Validar que la estancia mínima sea de al menos 30 minutos
+		if (difference < 30) {
+			validationError.value =
+				"La estancia mínima debe ser de al menos 30 minutos.";
+			return false;
+		}
 
-// defineExpose({
-//   $form,
-//   // clearForm,
-// });
+		return true;
+	}
+	return false;
+});
 
 const createStay = async () => {
-	console.log("FORM", form.value);
-	// await create(METHOD_HTTP.POST, "roomstays", undefined, form.value);
-	// if (errorCreate.value) return;
-	// closeModal();
-	// emit("onCreate");
 	emit("submit", form.value);
 };
-
-// onMounted(() => {
-//   console.log("LIST TYPES", listTypeDoc);
-//   console.log(formClientRef.value);
-//   console.log("CLIENTE BRO==>", form.value);
-// });
 </script>
 <template>
   <form @submit.prevent="createStay()">
     <section class="flex flex-col mt-3 shadow-lg px-5 py-4 rounded-md">
       <div class="flex justify-between items-center">
         <h2 class="sm:text-sm text-primary-yellow-300 mb-3">Cliente</h2>
-        <!-- <button
-          type="button"
-          class="text-primary-yellow-300 mb-3 text-xs font-semibold"
-          @click="switchEnableFormClient(false)"
-          v-if="disabledFormClient"
-        >
-          Nuevo +
-        </button>
-        <button
-          type="button"
-          class="text-primary-yellow-300 mb-3 text-xs font-semibold"
-          @click="switchEnableFormClient(true)"
-          v-else
-        >
-          Cancelar Nuevo
-        </button> -->
       </div>
-      <!-- <template> -->
-
       <slot name="client"></slot>
-
-      <!-- <formClientComponent
-        @findClient="findClient"
-        ref="formClientRef"
-        :disabled="disabledFormClient"
-        :create-button="false"
-        :search="disabledFormClient"
-        :listTypeDoc="listTypeDoc"
-        v-model:name="form.client.name"
-        v-model:last_name="form.client.last_name"
-        v-model:id_document_type="form.client.id_document_type"
-        v-model:document="form.client.document"
-      /> -->
-      <!-- </template> -->
     </section>
 
     <section class="flex flex-col mt-3 shadow-lg px-5 py-4 rounded-md">
@@ -165,18 +114,21 @@ const createStay = async () => {
           label="Ingreso"
           type="datetime-local"
           v-model="check_in_date"
+          ref="checkInInput"
         />
         <Input
           id="RoomFormStay"
           label="Salida"
           type="datetime-local"
           v-model="check_out_date"
+          ref="checkOutInput"
         />
         <Input
           id="RoomFormStay"
           label="Total"
           type="money"
           v-model="total_price"
+          ref="totalInput"
         />
 
         <Input id="RoomFormStay" label="Notas" type="text" v-model="notes" />
@@ -189,7 +141,16 @@ const createStay = async () => {
         @click="$emit('sendCloseModal')"
         label="Cancelar"
       />
-      <Button label="Guardar Cambios" />
+      <Button
+        label="Guardar Cambios"
+        :disabled="
+          !checkInInput.isValid ||
+          !checkOutInput.isValid ||
+          !totalInput.isValid ||
+          !validateDates ||
+          !clientref.isValid
+        "
+      />
     </div>
   </form>
 </template>
