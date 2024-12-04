@@ -33,7 +33,7 @@ const statusRoomComponent = ref<StatusRoom>({
 	result: [{ id: "", color: "" }],
 });
 
-const statusModal = ref("available");
+const statusModal = ref<string>("available");
 
 const returnRooms = async () => {
 	await filterRoom(

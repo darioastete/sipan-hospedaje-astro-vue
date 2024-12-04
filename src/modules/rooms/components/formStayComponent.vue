@@ -65,24 +65,24 @@ watch(client, (value) => {
 //   form.value.id_client = "";
 //   // formClientRef.value.clearForm();
 // };
-const rules = {
-	check_in_date: {
-		required,
-		$autoDirty: true,
-	},
-	check_out_date: {
-		required,
-		$autoDirty: true,
-	},
-	total_price: {
-		required,
-		$autoDirty: true,
-	},
-	notes: {
-		minLength: minLength(3),
-		$autoDirty: true,
-	},
-};
+// const rules = {
+//   check_in_date: {
+//     required,
+//     $autoDirty: true,
+//   },
+//   check_out_date: {
+//     required,
+//     $autoDirty: true,
+//   },
+//   total_price: {
+//     required,
+//     $autoDirty: true,
+//   },
+//   notes: {
+//     minLength: minLength(3),
+//     $autoDirty: true,
+//   },
+// };
 
 // const clearForm = () => {
 // 	formClientRef.value.clearForm();
@@ -94,12 +94,12 @@ const rules = {
 //   console.log(form.value);
 // };
 
-const $form = useVuelidate(rules, form);
+// const $form = useVuelidate(rules, form);
 
-defineExpose({
-	$form,
-	// clearForm,
-});
+// defineExpose({
+//   $form,
+//   // clearForm,
+// });
 
 const createStay = async () => {
 	console.log("FORM", form.value);

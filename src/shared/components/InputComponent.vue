@@ -17,7 +17,7 @@ const AllowedInputTypes = [
 const proxyProps = defineProps<{
 	label: string;
 	type: keyof typeof InputValidators;
-	id: string;
+	id?: string;
 	hasError?: boolean;
 	disabled?: boolean;
 	search?: boolean;

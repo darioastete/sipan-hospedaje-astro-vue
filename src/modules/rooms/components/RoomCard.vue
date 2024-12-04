@@ -40,7 +40,9 @@ const openModal = () => {
 </script>
 <template>
   <div
-    :class="`w-32 bg-white px-5 py-4 rounded-lg flex flex-col hover:scale-105 hover:shadow-md transition-all gap-1 cursor-pointer shadow-md`"
+    :class="`w-32 bg-white px-5 py-4 rounded-lg flex flex-col 
+         hover:scale-105 hover:shadow-md active:scale-100 active:shadow-lg 
+         transition-all gap-1 cursor-pointer shadow-md`"
     @click="openModal"
   >
     <span class="text-2xl font-bold text-primary-blue-500">{{ number }}</span>
