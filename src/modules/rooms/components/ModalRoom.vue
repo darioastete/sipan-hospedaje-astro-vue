@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import Button from "@components/ButtonComponent.vue";
 import ModalComponent from "@components/ModalComponent.vue";
-// import imgLogo from "@img/logo_negro.svg";
 import formClientComponent from "@maintenance/client/components/formClientComponent.vue";
 import AdditionalForm from "@room/components/AdditionalForm.vue";
 import Payments from "@room/components/PaymentsComponent.vue";
@@ -13,12 +12,14 @@ import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
 const { executeRequest: create, error: errorCreate } = useHttp();
 const { executeRequest: remove, error: errorRemove } = useHttp();
+const { executeRequest: cancelStay, error: errorCancel } = useHttp();
 const { executeRequest: update, error: errorUpdate } = useHttp();
 const {
 	executeRequest: find,
 	error: errorFind,
 	result: resultFind,
 } = useHttp();
+
 const emit = defineEmits<(e: "onCreate") => void>();
 const formClientRef = ref<any>();
 const handleSubmit = async ($event: any) => {
@@ -83,6 +84,13 @@ const enableRoom = async () => {
 	emit("onCreate");
 };
 
+const cancelJourney = async () => {
+	await cancelStay(METHOD_HTTP.DELETE, "cancelroomstay", resultFind.value.id);
+	if (errorCancel.value) return;
+	closeModal();
+	emit("onCreate");
+};
+
 onMounted(() => {
 	if (statusModal.value === "ocuped") {
 		findData();
@@ -122,9 +130,7 @@ onMounted(() => {
             <span>· {{ service.name }}</span>
           </div>
         </div>
-        <!-- </div> -->
       </section>
-      <!-- </div> -->
       <TabsStatusRoom v-if="statusModal !== 'cleaning' && statusModal !== 'mantenimiento'">
         <template v-slot:client v-if="statusModal === 'ocuped'">
           <section class="flex flex-col mt-3 shadow-lg px-5 py-4 rounded-md">
@@ -142,8 +148,6 @@ onMounted(() => {
               >
             </div>
           </section>
-        <!-- </template>
-        <template v-slot:stayDetails v-if="statusModal === 'ocuped'"> -->
           <section class="flex flex-col mt-3 shadow-lg px-5 py-4 rounded-md">
             <div class="text-xs flex gap-4 justify-between mb-4">
               <span
@@ -208,15 +212,21 @@ onMounted(() => {
       <template v-if="statusModal === 'ocuped'">
         <div class="mt-5 flex justify-end gap-3">
           <Button
+          type="button"
+          label="Volver"
+          color="secondary"
+          @click="closeModal"
+          />
+          <Button
             type="button"
-            label="Cancelar"
-            color="secondary"
-            @click="closeModal"
+            label="Cancelar Estadia"
+            color="danger"
+            @click="cancelJourney"
           />
           <Button
             type="button"
             label="Finalizar Estadia"
-            color="danger"
+            color="primary"
             @click="finishStadys"
           />
         </div>

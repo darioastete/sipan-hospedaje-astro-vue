@@ -3,7 +3,7 @@ import ButtonComponent from "@components/ButtonComponent.vue";
 import InputComponent from "@components/InputComponent.vue";
 import { useHttp } from "@composables/useHttpUniversal.composable";
 import { METHOD_HTTP } from "@type/MethodsHttp.const";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 // import { useVuelidate } from "@vuelidate/core";
 // import { email, minLength, required } from "@vuelidate/validators";
@@ -15,18 +15,6 @@ const form = ref({
 	to: "",
 });
 
-// const rules = {
-// 	from: {
-// 		required,
-// 		$autoDirty: true,
-// 	},
-// 	to: {
-// 		required,
-// 		$autoDirty: true,
-// 	},
-// };
-
-// const $form = useVuelidate(rules, form);
 const { path } = defineProps<{
 	path: string;
 	title: string;
@@ -38,13 +26,28 @@ const getReportForComposable = async () => {
 	console.log(result.value);
 };
 
+// Método para validar las fechas
+const validDates = computed((): boolean => {
+	const fromDate = form.value.from ? new Date(form.value.from) : null;
+	const toDate = form.value.to ? new Date(form.value.to) : null;
+
+	if (fromDate && toDate) {
+		if (toDate < fromDate) {
+			form.value.to = ""; // Limpiar el campo "Hasta" si es inválido
+			return false;
+		}
+		return true;
+	}
+	return false;
+});
+
 onMounted(async () => {
 	await getReportForComposable();
 });
 </script>
 <template>
   <div class="py-5 px-5">
-    <h2 class="text-xl font-semibold mb-5 mt-5">{{ title }}</h2>
+    <!-- <h2 class="text-xl font-semibold mb-5 mt-5">{{ title }}</h2> -->
     <form @submit.prevent="getReportForComposable" class="mb-5">
       <div class="flex flex-col sm:flex-row items-center justify-around">
         <div class="flex items-center justify-center">
@@ -61,7 +64,10 @@ onMounted(async () => {
             v-model="form.to"
           />
         </div>
-        <ButtonComponent label="Buscar" :disabled="!form.from || !form.to" />
+        <ButtonComponent
+          label="Buscar"
+          :disabled="!form.from || !form.to || !validDates"
+        />
       </div>
     </form>
     <div class="px-2 py-2 bg-white rounded-lg">

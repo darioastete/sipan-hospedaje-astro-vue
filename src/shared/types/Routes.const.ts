@@ -41,6 +41,11 @@ export const Routes = [
 		text: "Reportes",
 		children: [
 			{
+				href: "/report/room-movement",
+				icon: `${path}iClients.svg`,
+				text: "Movimiento de Habitaciones",
+			},
+			{
 				href: "/report/room-come",
 				icon: `${path}iCollect.svg`,
 				text: "Ingreso por Habitacion",
