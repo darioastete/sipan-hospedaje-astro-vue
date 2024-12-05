@@ -33,7 +33,6 @@ const handleSubmit = async ($event: any) => {
 interface IRoom {
 	id: string;
 	room_id: string;
-	id_client: string;
 	check_in_date: string;
 	check_out_date: string;
 	total_price: string;
@@ -172,7 +171,6 @@ onMounted(() => {
             :list-type-doc="documentTypes"
             :room-id-sel="idroom"
             v-model:room_id="form.room_id"
-            v-model:id_client="form.id_client"
             v-model:check_in_date="form.check_in_date"
             v-model:check_out_date="form.check_out_date"
             v-model:total_price="form.total_price"
